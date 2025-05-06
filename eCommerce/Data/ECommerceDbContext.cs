@@ -1,4 +1,5 @@
-﻿using ECommerce.Models;
+﻿using ECommerce.Configurations;
+using ECommerce.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Data
@@ -35,5 +36,15 @@ namespace ECommerce.Data
         public DbSet<ProductImage> ProductImages { get; set; }
 
         public DbSet<Slide> Slides { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new AppConfigConfigurations());
+            modelBuilder.ApplyConfiguration(new ProductConfigurations());
+            modelBuilder.ApplyConfiguration(new CategoryConfigurations());
+            modelBuilder.ApplyConfiguration(new ProductInCategoryConfigurations());
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }
