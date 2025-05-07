@@ -19,6 +19,9 @@ namespace ECommerce.Configurations
             builder.HasOne(o => o.Product)
                 .WithMany(o => o.OrderDetails)
                 .HasForeignKey(o => o.ProductId);
+
+            builder.Property(c => c.Price).HasColumnType("decimal(10, 2)");
+
         }
     }
 }

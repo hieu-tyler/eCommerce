@@ -10,9 +10,13 @@ namespace ECommerce.Configurations
         {
             builder.ToTable("Products");
 
-            builder.Property(p => p.Price).IsRequired();
-        
-            builder.Property(p => p.OriginalPrice).IsRequired();
+            builder.Property(p => p.Price)
+                .HasColumnType("decimal(10, 2)")
+                .IsRequired();
+
+            builder.Property(p => p.OriginalPrice)
+                .HasColumnType("decimal(10, 2)")
+                .IsRequired();
 
             builder.Property(p => p.Stock).IsRequired().HasDefaultValue(0);
         

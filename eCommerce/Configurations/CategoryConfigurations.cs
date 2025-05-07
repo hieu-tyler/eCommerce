@@ -11,7 +11,9 @@ namespace ECommerce.Configurations
         {
             builder.ToTable("Categories");
 
-            builder.Property(c => c.Status).HasDefaultValue(Status.Active);
+            builder.Property(c => c.Status)
+                .HasDefaultValue(Status.Active)
+                .HasSentinel(Status.Active);
         }
     }
 }
