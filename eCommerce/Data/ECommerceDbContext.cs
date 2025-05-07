@@ -1,5 +1,6 @@
 ﻿using ECommerce.Configurations;
 using ECommerce.Models;
+using ECommerce.Seeds;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Data
@@ -28,6 +29,7 @@ namespace ECommerce.Data
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Configure using Fluent API
             modelBuilder.ApplyConfiguration(new AppConfigConfigurations());
             modelBuilder.ApplyConfiguration(new CartConfigurations());
             modelBuilder.ApplyConfiguration(new CategoryConfigurations());
@@ -37,6 +39,9 @@ namespace ECommerce.Data
             modelBuilder.ApplyConfiguration(new ProductInCategoryConfigurations());
             modelBuilder.ApplyConfiguration(new PromotionConfigurations());
             modelBuilder.ApplyConfiguration(new TransactionConfigurations());
+
+            // Seeding
+            modelBuilder.Seed();
 
             base.OnModelCreating(modelBuilder);
         }
