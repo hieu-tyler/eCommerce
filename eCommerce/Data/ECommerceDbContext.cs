@@ -1,11 +1,13 @@
 ﻿using ECommerce.Configurations;
 using ECommerce.Models;
 using ECommerce.Seeds;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Data
 {
-    public class ECommerceDbContext: DbContext
+    public class ECommerceDbContext: IdentityDbContext<AppUser, AppRole, Guid>
     {
         public ECommerceDbContext(DbContextOptions<ECommerceDbContext> options) : base(options)
         {
@@ -30,7 +32,6 @@ namespace ECommerce.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configure using Fluent API
-            modelBuilder.ApplyConfiguration(new AppConfigConfigurations());
             modelBuilder.ApplyConfiguration(new CartConfigurations());
             modelBuilder.ApplyConfiguration(new CategoryConfigurations());
             modelBuilder.ApplyConfiguration(new OrderConfigurations());
@@ -39,6 +40,18 @@ namespace ECommerce.Data
             modelBuilder.ApplyConfiguration(new ProductInCategoryConfigurations());
             modelBuilder.ApplyConfiguration(new PromotionConfigurations());
             modelBuilder.ApplyConfiguration(new TransactionConfigurations());
+
+            modelBuilder.ApplyConfiguration(new AppConfigConfigurations());
+            modelBuilder.ApplyConfiguration(new AppRoleConfigurations());
+            modelBuilder.ApplyConfiguration(new AppUserConfigurations());
+
+            modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
+            modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x => new {x.UserId, x.RoleId});
+            modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("AppUserLogins").HasKey(x => x.UserId);
+
+            modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("AppUserCLaims");
+            modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
+
 
             // Seeding
             modelBuilder.Seed();

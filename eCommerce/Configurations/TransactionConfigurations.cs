@@ -11,6 +11,8 @@ namespace ECommerce.Configurations
             builder.Property(x => x.Amount).HasPrecision(10, 2);
 
             builder.Property(x => x.Fee).HasPrecision(10, 2);
+
+            builder.HasOne(x => x.AppUser).WithMany(x => x.Transactions).HasForeignKey(x => x.UserId);
         }
     }
 }
