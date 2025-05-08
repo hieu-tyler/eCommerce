@@ -1,6 +1,8 @@
-﻿namespace ECommerce.Models
+﻿using ECommerce.Models;
+
+namespace ECommerce.Catalog.Products.DTOs.Manage
 {
-    public class ProductTranslation
+    public class ProductUpdateRequest
     {
         public int Id { set; get; }
         public string Name { set; get; }
@@ -8,11 +10,8 @@
         public string Details { set; get; }
         public string SeoDescription { set; get; }
         public string SeoTitle { set; get; }
-        public string SeoAlias { get; set; }
 
-        public Product Product { get; set; }
-        public int ProductId { set; get; }
-        public Language Language { get; set; }
+        public string SeoAlias { get; set; }
         public string LanguageId { set; get; }
     }
 }
