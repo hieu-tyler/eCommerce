@@ -44,6 +44,8 @@ namespace ECommerce.Data
             modelBuilder.ApplyConfiguration(new AppConfigConfigurations());
             modelBuilder.ApplyConfiguration(new AppRoleConfigurations());
             modelBuilder.ApplyConfiguration(new AppUserConfigurations());
+            modelBuilder.ApplyConfiguration(new ProductImageConfigurations());
+
 
             modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
             modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x => new {x.UserId, x.RoleId});

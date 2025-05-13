@@ -10,6 +10,8 @@ namespace ECommerce.Configurations
         {
             builder.ToTable("Products");
 
+            builder.Property(x => x.Id).UseIdentityColumn();
+
             builder.Property(p => p.Price)
                 .HasColumnType("decimal(10, 2)")
                 .IsRequired();

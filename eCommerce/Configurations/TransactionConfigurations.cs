@@ -8,6 +8,10 @@ namespace ECommerce.Configurations
     {
         public void Configure(EntityTypeBuilder<Transaction> builder)
         {
+            builder.ToTable("Transactions");
+
+            builder.Property(x => x.Id).UseIdentityColumn();
+
             builder.Property(x => x.Amount).HasPrecision(10, 2);
 
             builder.Property(x => x.Fee).HasPrecision(10, 2);
