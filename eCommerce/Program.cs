@@ -1,7 +1,25 @@
+using ECommerce.ECommerce.Application.Catalog.Products;
+using ECommerce.ECommerce.Data.EF;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("ECommerceDb");
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
+builder.Services.AddDbContext<ECommerceDbContext>(options => options.UseSqlServer(connectionString));
+
+// Add Dependancy Injection
+builder.Services.AddTransient<IPublicProductService, PublicProductService>();
+
+//
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger ECommerce Solution", Version = "v1" });
+});
 
 var app = builder.Build();
 
@@ -17,8 +35,13 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseAuthorization();
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger ECommerce Solution V1");
+});
 
 app.MapControllerRoute(
     name: "default",

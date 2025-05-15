@@ -1,6 +1,4 @@
-﻿
-
-namespace ECommerce.ViewModels.Catalog.Products.Manage
+﻿namespace ECommerce.ECommerce.ViewModels.Catalog.Products
 {
     public class ProductUpdateRequest
     {

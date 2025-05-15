@@ -1,9 +1,9 @@
 ﻿using ECommerce.ECommerce.Application.Common;
 using ECommerce.ECommerce.Data.EF;
 using ECommerce.ECommerce.Data.Entities;
+using ECommerce.ECommerce.ViewModels.Catalog.Products;
 using ECommerce.Utilities.Exceptions;
 using ECommerce.ViewModels.Catalog.Products;
-using ECommerce.ViewModels.Catalog.Products.Manage;
 using ECommerce.ViewModels.Common;
 using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.Data.SqlClient;
@@ -89,7 +89,7 @@ namespace ECommerce.ECommerce.Application.Catalog.Products.Manage
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<PageResults<ProductViewModel>> GetAllPaging(GetProductPagingRequest request)
+        public async Task<PageResults<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request)
         {
             // Select join
             var query = from p in _context.Products
@@ -183,7 +183,7 @@ namespace ECommerce.ECommerce.Application.Catalog.Products.Manage
             return fileName;
         }
  
-        Task<PageResults<ProductViewModel>> IManageProductService.GetAllPaging(GetProductPagingRequest request)
+        Task<PageResults<ProductViewModel>> IManageProductService.GetAllPaging(GetManageProductPagingRequest request)
         {
             throw new NotImplementedException();
         }

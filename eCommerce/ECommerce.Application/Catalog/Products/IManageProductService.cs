@@ -1,5 +1,5 @@
-﻿using ECommerce.ViewModels.Catalog.Products;
-using ECommerce.ViewModels.Catalog.Products.Manage;
+﻿using ECommerce.ECommerce.ViewModels.Catalog.Products;
+using ECommerce.ViewModels.Catalog.Products;
 using ECommerce.ViewModels.Common;
 
 namespace ECommerce.ECommerce.Application.Catalog.Products.Manage
@@ -18,7 +18,7 @@ namespace ECommerce.ECommerce.Application.Catalog.Products.Manage
         
         Task AddViewCount(int productId);
         
-        Task<PageResults<ProductViewModel>> GetAllPaging(GetProductPagingRequest request);
+        Task<PageResults<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request);
 
         Task<int> AddImages(int productId, List<IFormFile> files);
 

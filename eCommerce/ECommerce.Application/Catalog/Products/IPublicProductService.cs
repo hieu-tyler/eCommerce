@@ -6,7 +6,9 @@ namespace ECommerce.ECommerce.Application.Catalog.Products
 {
     public interface IPublicProductService
     {
-        public Task<PageResults<ProductViewModel>> GetAllByCategoryId(GetProductPagingRequest request);
+        public Task<PageResults<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request);
+
+        public Task<List<ProductViewModel>> GetAll();
 
     }
 }
