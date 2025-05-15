@@ -2,7 +2,7 @@
 using ECommerce.ViewModels.Catalog.Products.Manage;
 using ECommerce.ViewModels.Common;
 
-namespace ECommerce.ECommerce.Application.Catalog.Products
+namespace ECommerce.ECommerce.Application.Catalog.Products.Manage
 {
     public interface IManageProductService
     {
@@ -15,7 +15,18 @@ namespace ECommerce.ECommerce.Application.Catalog.Products
         Task<bool> UpdatePrice(int productId, decimal newPrice);
 
         Task<bool> UpdateStock(int productId, int addedQuantity);
+        
         Task AddViewCount(int productId);
+        
         Task<PageResults<ProductViewModel>> GetAllPaging(GetProductPagingRequest request);
+
+        Task<int> AddImages(int productId, List<IFormFile> files);
+
+        Task<int> RemoveImages(int imageId);
+        
+        Task<int> UpdateImages(int imageId, string caption, bool isDefault);
+        
+        Task<List<ProductImageViewModel>> GetLIstImage(int productId);
+        
     }
 }

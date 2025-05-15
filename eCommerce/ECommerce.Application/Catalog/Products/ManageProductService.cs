@@ -1,18 +1,25 @@
-﻿using ECommerce.ECommerce.Data.EF;
+﻿using ECommerce.ECommerce.Application.Common;
+using ECommerce.ECommerce.Data.EF;
 using ECommerce.ECommerce.Data.Entities;
 using ECommerce.Utilities.Exceptions;
 using ECommerce.ViewModels.Catalog.Products;
 using ECommerce.ViewModels.Catalog.Products.Manage;
 using ECommerce.ViewModels.Common;
+using Microsoft.AspNetCore.Server.IISIntegration;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using System;
+using System.Net.Http.Headers;
 
-namespace ECommerce.ECommerce.Application.Catalog.Products
+namespace ECommerce.ECommerce.Application.Catalog.Products.Manage
 {
     public class ManageProductService : IManageProductService
     {
         private readonly ECommerceDbContext _context;
-        public ManageProductService(ECommerceDbContext context)
+        private readonly IStorageService _storageService;
+
+        public ManageProductService(ECommerceDbContext context, IStorageService storageService)
         {
             _context = context;
         } 
@@ -36,28 +43,49 @@ namespace ECommerce.ECommerce.Application.Catalog.Products
                 {
                     new ProductTranslation()
                     {
-                        Name = request.Name,
+                        Name =  request.Name,
                         Description = request.Description,
+                        Details = request.Details,
                         SeoDescription = request.SeoDescription,
                         SeoAlias = request.SeoAlias,
                         SeoTitle = request.SeoTitle,
-                        LanguageId = request.LanguageId,
+                        LanguageId = request.LanguageId
                     }
                 }
             };
+            //Save image
+            if (request.ThumbnailImage != null)
+            {
+                product.ProductImages = new List<ProductImage>()
+                {
+                    new ProductImage()
+                    {
+                        Caption = "Thumbnail image",
+                        DateCreated = DateTime.Now,
+                        FileSize = request.ThumbnailImage.Length,
+                        ImagePath = await SaveFile(request.ThumbnailImage),
+                        IsDefault = true,
+                        SortOrder = 1
+                    }
+                };
+            }
             _context.Products.Add(product);
             return await _context.SaveChangesAsync();
         }
 
-
         public async Task<int> Delete(int productId)
         {
             var product = await _context.Products.FindAsync(productId);
-            if (product == null)
-                _context.Products.Remove(product);
-            else
-                throw new ECommerceException($"Didn't find any product with productId: {productId}");
-            
+            if (product == null) throw new ECommerceException($"Cannot find a product: {productId}");
+
+            var images = _context.ProductImages.Where(i => i.ProductId == productId);
+            foreach (var image in images)
+            {
+                await _storageService.DeleteFileAsync(image.ImagePath);
+            }
+
+            _context.Products.Remove(product);
+
             return await _context.SaveChangesAsync();
         }
 
@@ -147,7 +175,35 @@ namespace ECommerce.ECommerce.Application.Catalog.Products
             return await _context.SaveChangesAsync() != 0;
         }
 
+        private async Task<string> SaveFile(IFormFile file)
+        {
+            var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
+            await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
+            return fileName;
+        }
+ 
         Task<PageResults<ProductViewModel>> IManageProductService.GetAllPaging(GetProductPagingRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> AddImages(int productId, List<IFormFile> files)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> RemoveImages(int imageId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> UpdateImages(int imageId, string caption, bool isDefault)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<ProductImageViewModel>> GetLIstImage(int productId)
         {
             throw new NotImplementedException();
         }
