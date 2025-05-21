@@ -5,6 +5,7 @@ using ECommerce.ECommerce.ViewModels.Catalog.Products;
 using ECommerce.Utilities.Exceptions;
 using ECommerce.ViewModels.Catalog.Products;
 using ECommerce.ViewModels.Common;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ namespace ECommerce.ECommerce.Application.Catalog.Products.Manage
         public ManageProductService(ECommerceDbContext context, IStorageService storageService)
         {
             _context = context;
+            _storageService = storageService; 
         } 
         public async Task AddViewCount(int productId)
         {
@@ -30,7 +32,7 @@ namespace ECommerce.ECommerce.Application.Catalog.Products.Manage
             await _context.SaveChangesAsync();
         }
 
-        public async Task<int> Create(ProductCreateRequest request)
+        public async Task<int> Create([FromForm]ProductCreateRequest request)
         {
             var product = new Product()
             {
@@ -70,7 +72,9 @@ namespace ECommerce.ECommerce.Application.Catalog.Products.Manage
                 };
             }
             _context.Products.Add(product);
-            return await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+
+            return product.Id;
         }
 
         public async Task<int> Delete(int productId)
@@ -114,7 +118,7 @@ namespace ECommerce.ECommerce.Application.Catalog.Products.Manage
                     .Take(request.PageSize)
                     .Select(x => new ProductViewModel()
                     {
-                        Id = x.p.Id,
+                        //Id = x.p.Id,
                         Name = x.pt.Name,
                         DateCreated = x.p.DateCreated,
                         Description = x.pt.Description,
@@ -182,15 +186,12 @@ namespace ECommerce.ECommerce.Application.Catalog.Products.Manage
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
             return fileName;
         }
- 
-        Task<PageResults<ProductViewModel>> IManageProductService.GetAllPaging(GetManageProductPagingRequest request)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<int> AddImages(int productId, List<IFormFile> files)
+        public async Task<int> AddImages(int productId, List<IFormFile> files)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FindAsync(productId);
+
+            return product.Id;
         }
 
         public Task<int> RemoveImages(int imageId)
@@ -203,9 +204,35 @@ namespace ECommerce.ECommerce.Application.Catalog.Products.Manage
             throw new NotImplementedException();
         }
 
-        public Task<List<ProductImageViewModel>> GetLIstImage(int productId)
+        public Task<List<ProductImageViewModel>> GetListImage(int productId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<ProductViewModel> GetProductById(int productId, string languageId)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(
+                x => x.ProductId == productId && x.LanguageId == languageId);
+
+            var productViewModel = new ProductViewModel()
+            {
+                Id = product.Id,
+                DateCreated = product.DateCreated,
+                Description = productTranslation != null ? productTranslation.Description : null,
+                LanguageId = productTranslation.LanguageId,
+                Details = productTranslation != null ? productTranslation.Details : null,
+                Name = productTranslation != null ? productTranslation.Name : null,
+                OriginalPrice = product.OriginalPrice,
+                Price = product.Price,
+                SeoAlias = productTranslation != null ? productTranslation.SeoAlias : null,
+                SeoDescription = productTranslation != null ? productTranslation.SeoDescription : null,
+                SeoTitle = productTranslation != null ? productTranslation.SeoTitle : null,
+                Stock = product.Stock,
+                ViewCount = product.ViewCount
+            };
+
+            return productViewModel;
         }
     }
 }

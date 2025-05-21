@@ -1,4 +1,6 @@
 using ECommerce.ECommerce.Application.Catalog.Products;
+using ECommerce.ECommerce.Application.Catalog.Products.Manage;
+using ECommerce.ECommerce.Application.Common;
 using ECommerce.ECommerce.Data.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -12,8 +14,10 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<ECommerceDbContext>(options => options.UseSqlServer(connectionString));
 
-// Add Dependancy Injection
+// Add Dependency Injection
 builder.Services.AddTransient<IPublicProductService, PublicProductService>();
+builder.Services.AddTransient<IManageProductService, ManageProductService>();
+builder.Services.AddTransient<IStorageService, FileStorageService>();
 
 //
 builder.Services.AddSwaggerGen(c =>
@@ -26,7 +30,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/Home/Error"); 
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }

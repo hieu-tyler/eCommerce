@@ -12,6 +12,8 @@ namespace ECommerce.ECommerce.Application.Catalog.Products.Manage
 
         Task<int> Delete(int productId);
 
+        Task<ProductViewModel> GetProductById(int productId, string languageId);
+
         Task<bool> UpdatePrice(int productId, decimal newPrice);
 
         Task<bool> UpdateStock(int productId, int addedQuantity);
@@ -26,7 +28,7 @@ namespace ECommerce.ECommerce.Application.Catalog.Products.Manage
         
         Task<int> UpdateImages(int imageId, string caption, bool isDefault);
         
-        Task<List<ProductImageViewModel>> GetLIstImage(int productId);
+        Task<List<ProductImageViewModel>> GetListImage(int productId);
         
     }
 }

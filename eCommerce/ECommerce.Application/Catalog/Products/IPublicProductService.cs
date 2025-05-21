@@ -8,7 +8,7 @@ namespace ECommerce.ECommerce.Application.Catalog.Products
     {
         public Task<PageResults<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request);
 
-        public Task<List<ProductViewModel>> GetAll();
+        public Task<List<ProductViewModel>> GetAll(string languageId);
 
     }
 }
