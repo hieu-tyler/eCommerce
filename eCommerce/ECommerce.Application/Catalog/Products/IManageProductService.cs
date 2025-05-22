@@ -1,4 +1,5 @@
-﻿using ECommerce.ECommerce.ViewModels.Catalog.Products;
+﻿using ECommerce.ECommerce.ViewModels.Catalog.ProductImages;
+using ECommerce.ECommerce.ViewModels.Catalog.Products;
 using ECommerce.ViewModels.Catalog.Products;
 using ECommerce.ViewModels.Common;
 
@@ -22,13 +23,16 @@ namespace ECommerce.ECommerce.Application.Catalog.Products.Manage
         
         Task<PageResults<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request);
 
-        Task<int> AddImages(int productId, List<IFormFile> files);
+        Task<int> AddImage(int productId, ProductImageCreateRequest request);
 
         Task<int> RemoveImages(int imageId);
         
-        Task<int> UpdateImages(int imageId, string caption, bool isDefault);
-        
-        Task<List<ProductImageViewModel>> GetListImage(int productId);
+        Task<int> UpdateImages(int imageId, ProductImageUpdateRequest request);
+
+        //Task<ProductImageViewModel> GetProductImageById(int imageId, int productId);
+        Task<ProductImageViewModel> GetImageById(int imageId);
+
+        Task<List<ProductImageViewModel>> GetListImages(int productId);
         
     }
 }
