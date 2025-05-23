@@ -2,6 +2,8 @@ using ECommerce.ECommerce.Application.Catalog.Products;
 using ECommerce.ECommerce.Application.Catalog.Products.Manage;
 using ECommerce.ECommerce.Application.Common;
 using ECommerce.ECommerce.Data.EF;
+using ECommerce.ECommerce.Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -18,6 +20,9 @@ builder.Services.AddDbContext<ECommerceDbContext>(options => options.UseSqlServe
 builder.Services.AddTransient<IPublicProductService, PublicProductService>();
 builder.Services.AddTransient<IManageProductService, ManageProductService>();
 builder.Services.AddTransient<IStorageService, FileStorageService>();
+builder.Services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
+builder.Services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
+builder.Services.AddTransient<RoleManager<AppUser>, RoleManager<AppUser>>();
 
 //
 builder.Services.AddSwaggerGen(c =>
