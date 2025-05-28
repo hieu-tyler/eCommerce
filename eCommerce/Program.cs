@@ -1,6 +1,7 @@
 using ECommerce.ECommerce.Application.Catalog.Products;
 using ECommerce.ECommerce.Application.Catalog.Products.Manage;
 using ECommerce.ECommerce.Application.Common;
+using ECommerce.ECommerce.Application.System.Users;
 using ECommerce.ECommerce.Data.EF;
 using ECommerce.ECommerce.Data.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -13,21 +14,58 @@ var connectionString = builder.Configuration.GetConnectionString("ECommerceDb");
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-
+// builder add registering DbContext with SQL Server
 builder.Services.AddDbContext<ECommerceDbContext>(options => options.UseSqlServer(connectionString));
+
+
+// Add Identity services
+builder.Services.AddIdentity<AppUser, AppRole>()
+    .AddEntityFrameworkStores<ECommerceDbContext>()
+    .AddDefaultTokenProviders();
 
 // Add Dependency Injection
 builder.Services.AddTransient<IPublicProductService, PublicProductService>();
 builder.Services.AddTransient<IManageProductService, ManageProductService>();
 builder.Services.AddTransient<IStorageService, FileStorageService>();
-builder.Services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
-builder.Services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
-builder.Services.AddTransient<RoleManager<AppUser>, RoleManager<AppUser>>();
+//builder.Services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
+//builder.Services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
+//builder.Services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
+builder.Services.AddTransient<IUserService, UserService>();
 
 //
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger ECommerce Solution", Version = "v1" });
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "@JWT Authorization header using the Bearer scheme. \r\n\n " +
+       "Enter 'Bearer' [space] and then your token in the text input below. \r\n\r\n" +
+       "Example: 'Bearer 12345abcdef'",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+            },
+            new string[] {}
+        }
+    });
+
 });
 
 var app = builder.Build();
