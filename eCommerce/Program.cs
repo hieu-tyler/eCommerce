@@ -4,12 +4,16 @@ using ECommerce.ECommerce.Application.Common;
 using ECommerce.ECommerce.Application.System.Users;
 using ECommerce.ECommerce.Data.EF;
 using ECommerce.ECommerce.Data.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ECommerceDb");
+var configuration = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -65,8 +69,33 @@ builder.Services.AddSwaggerGen(c =>
             new string[] {}
         }
     });
-
 });
+
+string issuer = configuration.GetValue<string>("Tokens:Issuer");
+string signingKey = configuration.GetValue<string>("Tokens:Key");
+byte[] signingKeyBytes = System.Text.Encoding.UTF8.GetBytes(signingKey);
+
+builder.Services.AddAuthentication(opt =>
+{
+    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true,
+            ValidIssuer = issuer,
+            ValidateAudience = true,
+            ValidAudience = issuer,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ClockSkew = System.TimeSpan.Zero,
+            IssuerSigningKey = new SymmetricSecurityKey(signingKeyBytes)
+        };
+    });
 
 var app = builder.Build();
 
@@ -83,6 +112,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>

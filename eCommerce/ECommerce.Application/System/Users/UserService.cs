@@ -32,7 +32,7 @@ namespace ECommerce.ECommerce.Application.System.Users
         
             var result = _signInManager.PasswordSignInAsync(username, request.Password, request.RememberMe, true);
 
-            if (!result.IsCompletedSuccessfully)
+            if (!result.Result.Succeeded)
             {
                 return null;
             }
@@ -75,7 +75,7 @@ namespace ECommerce.ECommerce.Application.System.Users
             };
             var result = _userManager.CreateAsync(user, request.Password);
 
-            if (result.IsCompletedSuccessfully)
+            if (result.Result.Succeeded)
             {
                 return true;
             }

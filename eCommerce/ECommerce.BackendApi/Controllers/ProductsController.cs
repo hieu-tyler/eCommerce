@@ -3,12 +3,14 @@ using ECommerce.ECommerce.Application.Catalog.Products.Manage;
 using ECommerce.ECommerce.ViewModels.Catalog.ProductImages;
 using ECommerce.ECommerce.ViewModels.Catalog.Products;
 using ECommerce.ViewModels.Catalog.Products.Public;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.ECommerce.BackendApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductsController : Controller
     {
         public readonly IPublicProductService _publicProductService;
