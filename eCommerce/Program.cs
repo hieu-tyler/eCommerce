@@ -1,10 +1,10 @@
-using ECommerce.ECommerce.Application.Catalog.Products;
-using ECommerce.ECommerce.Application.Catalog.Products.Manage;
-using ECommerce.ECommerce.Application.Common;
-using ECommerce.ECommerce.Application.System.Users;
-using ECommerce.ECommerce.Data.EF;
-using ECommerce.ECommerce.Data.Entities;
-using ECommerce.ECommerce.ViewModels.System.Users;
+using ECommerce.Application.Catalog.Products;
+using ECommerce.Application.Catalog.Products.Manage;
+using ECommerce.Application.Common;
+using ECommerce.Application.System.Users;
+using ECommerce.Data.EF;
+using ECommerce.Data.Entities;
+using ECommerce.ViewModels.System.Users;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
