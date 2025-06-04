@@ -1,6 +1,4 @@
-﻿
-
-namespace ECommerce.Application.System.Users
+﻿namespace Application.System.Users
 {
     public interface IUserService
     {

@@ -1,6 +1,6 @@
-﻿using ECommerce.Data.Enum;
+﻿using Data.Enum;
 
-namespace ECommerce.Data.Entities
+namespace Data.Entities
 {
     public class Order
     {

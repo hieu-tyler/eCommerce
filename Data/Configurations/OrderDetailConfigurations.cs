@@ -1,8 +1,8 @@
-﻿using ECommerce.Data.Entities;
+﻿using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ECommerce.Data.Configurations
+namespace Data.Configurations
 {
     public class OrderDetailConfigurations : IEntityTypeConfiguration<OrderDetail>
     {

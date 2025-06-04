@@ -1,4 +1,4 @@
-﻿namespace ECommerce.ViewModels.Catalog.ProductImages
+﻿namespace ViewModels.Catalog.ProductImages
 {
     public class ProductImageViewModel
     {

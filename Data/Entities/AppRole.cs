@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ECommerce.Data.Entities
+namespace Data.Entities
 {
     public class AppRole : IdentityRole<Guid>
     {

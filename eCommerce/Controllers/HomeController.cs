@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using ECommerce.MVC.Models;
+using BackendApi.Models;
 
-namespace ECommerce.MVC.Controllers;
+namespace BackendApi.Controllers;
 
 public class HomeController : Controller
 {

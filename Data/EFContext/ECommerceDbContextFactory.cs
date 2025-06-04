@@ -2,7 +2,8 @@
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
-namespace ECommerce.Data.EF
+// TODO: Move to Infrastructure project if needed
+namespace Data.EFContext
 {
     public class ECommerceDbContextFactory : IDesignTimeDbContextFactory<ECommerceDbContext>
     {

@@ -1,9 +1,9 @@
-﻿using ECommerce.Data.Entities;
-using ECommerce.Data.Enum;
+﻿using Data.Entities;
+using Data.Enum;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace ECommerce.Data.Extensions
+namespace Data.Extensions
 {
     public static class ECommerceModelBuilder
     {
