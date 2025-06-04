@@ -52,7 +52,7 @@ namespace Application.System.Users
 
             var token = new JwtSecurityToken(
                 issuer: _config["Tokens:Issuer"],
-                audience: _config["Tokens:Audience"],
+                audience: _config["Tokens:Issuer"],
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(30),
                 signingCredentials: creds

@@ -1,5 +1,6 @@
 using AdminApp.Services;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using ViewModels.System.Users;
 
 namespace AdminApp;
@@ -17,8 +18,19 @@ public class Program
         // Add Validation for LoginRequest
         builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
 
+        builder.Services
+            .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/User/Login/"; // Set the login path for unauthenticated users
+                options.AccessDeniedPath = "/User/Forbidden/"; // Set the access denied path for unauthorized users
+                //options.ExpireTimeSpan = TimeSpan.FromMinutes(10); // Set the cookie expiration time
+                //options.SlidingExpiration = true; // Enable sliding expiration
+            });
+
         // Register HttpClient for API calls
         builder.Services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
+
 
         // if DEBUG
         if (builder.Environment.IsDevelopment())
