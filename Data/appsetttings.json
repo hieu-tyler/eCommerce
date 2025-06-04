@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "ECommerceDb": "Server=.;Database=ECommerce;Trusted_Connection=True;TrustServerCertificate=True;"
+  }
+}
