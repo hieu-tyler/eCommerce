@@ -22,8 +22,8 @@ internal class Program
 
         // Add services to the container.
         builder.Services.AddControllers();
-        builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
-        builder.Services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
+        //builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
+        //builder.Services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
 
         // builder add registering DbContext with SQL Server
         builder.Services.AddDbContext<ECommerceDbContext>(options => options.UseSqlServer(connectionString));
@@ -41,8 +41,8 @@ internal class Program
         builder.Services.AddTransient<IUserService, UserService>();
 
         // Add FluentValidation for LoginRequest
-        builder.Services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
-        builder.Services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
+        //builder.Services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
+        //builder.Services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
 
         // Add AutoMapper
         builder.Services.AddSwaggerGen(c =>
