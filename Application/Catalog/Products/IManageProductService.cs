@@ -1,9 +1,8 @@
-﻿using ECommerce.ViewModels.Catalog.ProductImages;
-using ECommerce.ViewModels.Catalog.Products;
-using ECommerce.ViewModels.Catalog.Products;
-using ECommerce.ViewModels.Common;
+﻿using ViewModels.Catalog.ProductImages;
+using ViewModels.Catalog.Products;
+using ViewModels.Common;
 
-namespace ECommerce.Application.Catalog.Products.Manage
+namespace Application.Catalog.Products
 {
     public interface IManageProductService
     {

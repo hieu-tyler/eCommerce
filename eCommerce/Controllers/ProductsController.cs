@@ -1,12 +1,10 @@
-﻿using ECommerce.Application.Catalog.Products;
-using ECommerce.Application.Catalog.Products.Manage;
-using ECommerce.ViewModels.Catalog.ProductImages;
-using ECommerce.ViewModels.Catalog.Products;
-using ECommerce.ViewModels.Catalog.Products.Public;
+﻿using Application.Catalog.Products;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ViewModels.Catalog.ProductImages;
+using ViewModels.Catalog.Products;
 
-namespace ECommerce.BackendApi.Controllers
+namespace BackendApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

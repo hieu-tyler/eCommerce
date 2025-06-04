@@ -1,8 +1,7 @@
-﻿using ECommerce.ViewModels.Catalog.Products;
-using ECommerce.ViewModels.Catalog.Products.Public;
-using ECommerce.ViewModels.Common;
+﻿using ViewModels.Catalog.Products;
+using ViewModels.Common;
 
-namespace ECommerce.Application.Catalog.Products
+namespace Application.Catalog.Products
 {
     public interface IPublicProductService
     {

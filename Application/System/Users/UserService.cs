@@ -1,13 +1,13 @@
-﻿using ECommerce.Data.Entities;
-using ECommerce.ViewModels.System.Users;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+using Data.Entities;
+using ViewModels.System.Users;
 
-namespace ECommerce.Application.System.Users
+namespace Application.System.Users
 {
     public class UserService : IUserService
     {

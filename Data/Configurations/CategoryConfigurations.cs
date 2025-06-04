@@ -1,9 +1,9 @@
-﻿using ECommerce.Data.Entities;
-using ECommerce.Data.Enum;
+﻿using Data.Entities;
+using Data.Enum;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ECommerce.Data.Configurations
+namespace Data.Configurations
 {
     public class CategoryConfigurations : IEntityTypeConfiguration<Category>
     {

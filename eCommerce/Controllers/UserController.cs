@@ -1,10 +1,10 @@
-﻿using ECommerce.Application.System.Users;
-using ECommerce.ViewModels.System.Users;
+﻿using Application.System.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ViewModels.System.Users;
 
-namespace ECommerce.BackendApi.Controllers
+namespace BackendApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

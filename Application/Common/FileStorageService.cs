@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting; // Ensure this namespace is included
 
 
-namespace ECommerce.Application.Common
+namespace Application.Common
 {
     public class FileStorageService : IStorageService
     {

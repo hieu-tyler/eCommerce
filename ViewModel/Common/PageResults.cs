@@ -1,4 +1,4 @@
-﻿namespace ECommerce.ViewModels.Common
+﻿namespace ViewModels.Common
 {
     public class PageResults<T>
     {

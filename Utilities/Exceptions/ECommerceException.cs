@@ -1,4 +1,4 @@
-﻿namespace ECommerce.Utilities.Exceptions
+﻿namespace Utilities.Exceptions
 {
     public class ECommerceException : Exception
     {

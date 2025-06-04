@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace ECommerce.ViewModels.System.Users
+namespace ViewModels.System.Users
 {
     public class LoginRequestValidator : AbstractValidator<LoginRequest>
     {
