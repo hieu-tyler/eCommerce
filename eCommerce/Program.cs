@@ -1,10 +1,8 @@
-using ECommerce.Application.Catalog.Products;
-using ECommerce.Application.Catalog.Products.Manage;
-using ECommerce.Application.Common;
-using ECommerce.Application.System.Users;
-using ECommerce.Data.EF;
-using ECommerce.Data.Entities;
-using ECommerce.ViewModels.System.Users;
+using Application.Catalog.Products;
+using Application.Common;
+using Application.System.Users;
+using Data.EFContext;
+using Data.Entities;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using ViewModels.System.Users;
 
 internal class Program
 {

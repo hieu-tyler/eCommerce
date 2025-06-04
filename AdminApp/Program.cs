@@ -9,6 +9,13 @@ public class Program
         // Add services to the container.
         builder.Services.AddControllersWithViews();
 
+         // if DEBUG
+        if (builder.Environment.IsDevelopment())
+        {
+            //builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+        }
+        //endif
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.

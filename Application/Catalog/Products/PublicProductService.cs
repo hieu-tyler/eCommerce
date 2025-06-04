@@ -1,12 +1,9 @@
-﻿using ECommerce.Data.EF;
-using ECommerce.ViewModels.Catalog.Products;
-using ECommerce.ViewModels.Catalog.Products.Public;
-using Microsoft.EntityFrameworkCore;
-using ECommerce.ViewModels.Common;
-using Azure.Core;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+﻿using Microsoft.EntityFrameworkCore;
+using Data.EFContext;
+using ViewModels.Catalog.Products;
+using ViewModels.Common;
 
-namespace ECommerce.Application.Catalog.Products
+namespace Application.Catalog.Products
 {
     public class PublicProductService : IPublicProductService
     {

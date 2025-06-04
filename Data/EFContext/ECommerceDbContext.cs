@@ -1,11 +1,13 @@
-﻿using ECommerce.Data.Configurations;
-using ECommerce.Data.Entities;
-using ECommerce.Data.Extensions;
+﻿using Data.Configurations;
+using Data.Entities;
+using Data.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace ECommerce.Data.EF
+// TODO: Move to Infrastructure project if needed
+
+namespace Data.EFContext
 {
     public class ECommerceDbContext: IdentityDbContext<AppUser, AppRole, Guid>
     {

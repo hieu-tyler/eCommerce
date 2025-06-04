@@ -1,7 +1,6 @@
-﻿
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
-namespace ECommerce.ViewModels.Catalog.ProductImages
+namespace ViewModels.Catalog.ProductImages
 {
     public class ProductImageUpdateRequest
     {

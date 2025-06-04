@@ -1,4 +1,4 @@
-﻿namespace ECommerce.Data.Entities
+﻿namespace Data.Entities
 {
     public class AppConfig
     {

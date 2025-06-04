@@ -1,4 +1,4 @@
-﻿namespace ECommerce.ViewModels.System.Users
+﻿namespace ViewModels.System.Users
 {
     public class LoginRequest
     {

@@ -1,6 +1,6 @@
-﻿using ECommerce.ViewModels.Common;
+﻿using ViewModels.Common;
 
-namespace ECommerce.ViewModels.Catalog.Products.Public
+namespace ViewModels.Catalog.Products
 {
     public class GetPublicProductPagingRequest : PagingRequestBase
     {

@@ -1,22 +1,19 @@
-﻿using ECommerce.Application.Common;
-using ECommerce.Data.EF;
-using ECommerce.Data.Entities;
-using ECommerce.ViewModels.Catalog.ProductImages;
-using ECommerce.ViewModels.Catalog.Products;
-using ECommerce.Utilities.Exceptions;
-using ECommerce.ViewModels.Catalog.Products;
-using ECommerce.ViewModels.Common;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.AspNetCore.Server.IISIntegration;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using System;
 using System.Net.Http.Headers;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Http;
+using Application.Common;
+using Data.EFContext;
+using Data.Entities;
+using ViewModels.Catalog.Products;
+using ViewModels.Catalog.ProductImages;
+using ViewModels.Common;
+using Utilities.Exceptions;
 
-namespace ECommerce.Application.Catalog.Products.Manage
+namespace Application.Catalog.Products
 {
     public class ManageProductService : IManageProductService
     {
