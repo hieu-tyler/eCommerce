@@ -1,3 +1,7 @@
+using AdminApp.Services;
+using FluentValidation;
+using ViewModels.System.Users;
+
 namespace AdminApp;
 
 public class Program
@@ -8,11 +12,18 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
+        builder.Services.AddHttpClient<IUserApiClient, UserApiClient>();
 
-         // if DEBUG
+        // Add Validation for LoginRequest
+        builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
+
+        // Register HttpClient for API calls
+        builder.Services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
+
+        // if DEBUG
         if (builder.Environment.IsDevelopment())
         {
-            //builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+            builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
         }
         //endif
 
@@ -30,6 +41,8 @@ public class Program
         app.UseStaticFiles();
 
         app.UseRouting();
+
+        app.UseAuthentication();
 
         app.UseAuthorization();
 
