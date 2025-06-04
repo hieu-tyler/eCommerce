@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Data.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Configuration;
-using Data.Entities;
+using ViewModels.Catalog.Products;
+using ViewModels.Common;
 using ViewModels.System.Users;
 
 namespace Application.System.Users
@@ -60,6 +64,41 @@ namespace Application.System.Users
 
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public async Task<PageResults<UserViewModel>> GetUsersPaging(GetUserPagingRequest request)
+        {
+            var query = _userManager.Users;
+            if (!string.IsNullOrEmpty(request.Keyword))
+            {
+                query = query.Where(x => x.UserName.Contains(request.Keyword) || x.PhoneNumber.Contains(request.Keyword));
+            }
+
+            // Paging
+            int totalRow = await query.CountAsync();
+            int skipPage = (request.PageIndex - 1) * request.PageSize;
+            var data = await query
+                    .Skip(skipPage)
+                    .Take(request.PageSize)
+                    .Select(x => new UserViewModel()
+                    {
+                        Id = x.Id,
+                        FirstName = x.FirstName,
+                        LastName = x.LastName,
+                        Dob = x.Dob,
+                        Email = x.Email,
+                        PhoneNumber = x.PhoneNumber,
+                        UserName = x.UserName,
+                    }).ToListAsync();
+
+            // Select and projection
+            var pageResult = new PageResults<UserViewModel>()
+            {
+                TotalRecords = totalRow,
+                Items = data,
+            };
+
+            return pageResult;
         }
 
         public async Task<bool> Register(RegisterRequest request)

@@ -1,4 +1,7 @@
-﻿namespace Application.System.Users
+﻿using ViewModels.Catalog.Products;
+using ViewModels.Common;
+
+namespace Application.System.Users
 {
     public interface IUserService
     {
@@ -6,6 +9,6 @@
         
         Task<bool> Register(ViewModels.System.Users.RegisterRequest request);
 
-        //Task<>
+        Task<PageResults<UserViewModel>> GetUsersPaging(GetUserPagingRequest request);
     }
 }
