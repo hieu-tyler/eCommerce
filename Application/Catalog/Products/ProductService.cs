@@ -15,12 +15,12 @@ using Utilities.Exceptions;
 
 namespace Application.Catalog.Products
 {
-    public class ManageProductService : IManageProductService
+    public class ProductService : IProductService
     {
         private readonly ECommerceDbContext _context;
         private readonly IStorageService _storageService;
 
-        public ManageProductService(ECommerceDbContext context, IStorageService storageService)
+        public ProductService(ECommerceDbContext context, IStorageService storageService)
         {
             _context = context;
             _storageService = storageService;
@@ -284,31 +284,6 @@ namespace Application.Catalog.Products
                 }).ToListAsync();
         }
 
-        //public async Task<ProductImageViewModel> GetProductImageById(int imageId, int productId)
-        //{
-        //    var productViewModel = await _context.ProductImages
-        //        .Where(x => x.ProductId == productId && x.Id == imageId)
-        //        .Select(x => new ProductImageViewModel()
-        //        {
-        //            Caption = x.Caption,
-        //            DateCreated = x.DateCreated,
-        //            FileSize = x.FileSize,
-        //            ImagePath = x.ImagePath,
-        //            IsDefault = x.IsDefault,
-        //            ProductId = x.ProductId,
-        //           SortOrddr = x.SortOrder
-        //        }).FirstOrDefaultAsync();
-
-        //    if (productViewModel == null)
-        //    {
-        //        throw new ECommerceException($"Cannot find product image with id: {imageId}");
-        //    }
-        //    else
-        //    {
-        //         return productViewModel;
-        //    }
-        //}
-
         public async Task<ProductImageViewModel> GetImageById(int imageId)
         {
            var searchedImage = await _context.ProductImages
@@ -326,6 +301,52 @@ namespace Application.Catalog.Products
 
             if (searchedImage == null) throw new ECommerceException($"Cannot find product image with id: {imageId}");
             else return searchedImage;
+        }
+
+        public async Task<PageResults<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request, string languageId)
+        {
+            // Select join
+            var query = from p in _context.Products
+                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                        join c in _context.Categories on pic.CategoryId equals c.Id
+                        where pt.LanguageId == languageId
+                        select new { p, pt, pic };
+
+            // Filter
+            if (request.CategoryId.HasValue && request.CategoryId.Value > 0)
+                query = query.Where(x => x.pic.CategoryId == request.CategoryId);
+
+            // Paging
+            int totalRow = await query.CountAsync();
+            int skipPage = (request.PageIndex - 1) * request.PageSize;
+            var data = await query
+                    .Skip(skipPage)
+                    .Take(request.PageSize)
+                    .Select(x => new ProductViewModel()
+                    {
+                        Id = x.p.Id,
+                        Name = x.pt.Name,
+                        DateCreated = x.p.DateCreated,
+                        Description = x.pt.Description,
+                        LanguageId = x.pt.LanguageId,
+                        OriginalPrice = x.p.OriginalPrice,
+                        Price = x.p.Price,
+                        SeoAlias = x.pt.SeoAlias,
+                        SeoDescription = x.pt.SeoDescription,
+                        SeoTitle = x.pt.SeoTitle,
+                        Stock = x.p.Stock,
+                        ViewCount = x.p.ViewCount,
+                    }).ToListAsync();
+
+            // Select and projection
+            var pageResult = new PageResults<ProductViewModel>()
+            {
+                TotalRecords = totalRow,
+                Items = data,
+            };
+
+            return pageResult;
         }
     }
 }
