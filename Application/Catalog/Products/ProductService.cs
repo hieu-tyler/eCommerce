@@ -93,7 +93,7 @@ namespace Application.Catalog.Products
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<PageResults<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request)
+        public async Task<PageResult<ProductViewModel>> GetAllPaging(GetProductPagingRequest request)
         {
             // Select join
             var query = from p in _context.Products
@@ -107,8 +107,8 @@ namespace Application.Catalog.Products
             if (!string.IsNullOrEmpty(request.Keyword))
                 query = query.Where(x => x.pt.Name.Contains(request.Keyword));
 
-            if (request.CategoryIds.Count > 0)
-                query = query.Where(x => request.CategoryIds.Contains(x.pic.CategoryId));
+            if (request.CategoryId.Value > 0)
+                query = query.Where(x => request.CategoryId == x.pic.CategoryId);
 
             // Paging
             int totalRow = await query.CountAsync();
@@ -133,7 +133,7 @@ namespace Application.Catalog.Products
                     }).ToListAsync();
 
             // Select and projection
-            var pageResult = new PageResults<ProductViewModel>()
+            var pageResult = new PageResult<ProductViewModel>()
             {
                 TotalRecords = totalRow,
                 Items = data,
@@ -303,7 +303,7 @@ namespace Application.Catalog.Products
             else return searchedImage;
         }
 
-        public async Task<PageResults<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request, string languageId)
+        public async Task<PageResult<ProductViewModel>> GetAllByCategoryId(GetProductPagingRequest request, string languageId)
         {
             // Select join
             var query = from p in _context.Products
@@ -340,7 +340,7 @@ namespace Application.Catalog.Products
                     }).ToListAsync();
 
             // Select and projection
-            var pageResult = new PageResults<ProductViewModel>()
+            var pageResult = new PageResult<ProductViewModel>()
             {
                 TotalRecords = totalRow,
                 Items = data,

@@ -33,7 +33,7 @@ namespace BackendApi.Controllers
 
         // lhocalstart:5000/api/products/public-paging?categoryId=1&pageIndex
         [HttpGet("{languageId}")]
-        public async Task<IActionResult> GetAllPaging([FromQuery]GetPublicProductPagingRequest request, string languageId)
+        public async Task<IActionResult> GetAllPaging([FromQuery] GetProductPagingRequest request, string languageId)
         {
             var products = await _productService.GetAllByCategoryId(request, languageId);
 

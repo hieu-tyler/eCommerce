@@ -1,14 +1,14 @@
-﻿using ViewModels.Catalog.Products;
-using ViewModels.Common;
+﻿using ViewModels.Common;
+using ViewModels.System.Users;
 
 namespace Application.System.Users
 {
     public interface IUserService
     {
-        Task<string> Authenticate(ViewModels.System.Users.LoginRequest request);
+        Task<string> Authenticate(LoginRequest request);
         
-        Task<bool> Register(ViewModels.System.Users.RegisterRequest request);
+        Task<bool> Register(RegisterRequest request);
 
-        Task<PageResults<UserViewModel>> GetUsersPaging(GetUserPagingRequest request);
+        Task<PageResult<UserViewModel>> GetUsersPaging(GetUserPagingRequest request);
     }
 }

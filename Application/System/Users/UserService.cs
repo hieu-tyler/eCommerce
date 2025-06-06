@@ -7,7 +7,6 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pag
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using ViewModels.Catalog.Products;
 using ViewModels.Common;
 using ViewModels.System.Users;
 
@@ -66,7 +65,7 @@ namespace Application.System.Users
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public async Task<PageResults<UserViewModel>> GetUsersPaging(GetUserPagingRequest request)
+        public async Task<PageResult<UserViewModel>> GetUsersPaging(GetUserPagingRequest request)
         {
             var query = _userManager.Users;
             if (!string.IsNullOrEmpty(request.Keyword))
@@ -92,7 +91,7 @@ namespace Application.System.Users
                     }).ToListAsync();
 
             // Select and projection
-            var pageResult = new PageResults<UserViewModel>()
+            var pageResult = new PageResult<UserViewModel>()
             {
                 TotalRecords = totalRow,
                 Items = data,
