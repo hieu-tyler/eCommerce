@@ -4,7 +4,7 @@ using ViewModels.Common;
 
 namespace Application.Catalog.Products
 {
-    public interface IManageProductService
+    public interface IProductService
     {
         Task<int> Create(ProductCreateRequest request);
 
@@ -20,7 +20,7 @@ namespace Application.Catalog.Products
         
         Task AddViewCount(int productId);
         
-        Task<PageResults<ProductViewModel>> GetAllPaging(GetManageProductPagingRequest request);
+        Task<PageResult<ProductViewModel>> GetAllPaging(GetProductPagingRequest request);
 
         Task<int> AddImage(int productId, ProductImageCreateRequest request);
 
@@ -28,7 +28,8 @@ namespace Application.Catalog.Products
         
         Task<int> UpdateImages(int imageId, ProductImageUpdateRequest request);
 
-        //Task<ProductImageViewModel> GetProductImageById(int imageId, int productId);
+        public Task<PageResult<ProductViewModel>> GetAllByCategoryId(GetProductPagingRequest request, string languageId);
+
         Task<ProductImageViewModel> GetImageById(int imageId);
 
         Task<List<ProductImageViewModel>> GetListImages(int productId);

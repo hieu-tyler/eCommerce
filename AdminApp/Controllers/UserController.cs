@@ -26,15 +26,26 @@ namespace AdminApp.Controllers
             _configuration = configuration;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 10)
         {
-            return View();
+            var sessionToken = HttpContext.Session.GetString("Token");
+            var request = new GetUserPagingRequest()
+            {
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                Keyword = keyword,
+            };
+            
+            
+            var data = await _userApiClient.GetUserPaging(request);
+            return View(data);
         }
 
         [HttpGet]
         public async Task<IActionResult> Login()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Remove("Token");
             return View();
         }
 
@@ -52,6 +63,10 @@ namespace AdminApp.Controllers
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
                 IsPersistent = false
             };
+
+            HttpContext.Session.SetString("Token", token);
+
+            // Sign in the user with the validated token
             await HttpContext.SignInAsync(
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         userPrincipal,

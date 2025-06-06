@@ -2,10 +2,9 @@
 
 namespace ViewModels.Catalog.Products
 {
-    public class GetPublicProductPagingRequest : PagingRequestBase
+    public class GetProductPagingRequest : PagingRequestBase
     {
-        //public string LanguageId { get; set; } = "vi";
+        public string Keyword { get; set; }
         public int? CategoryId { get; set; }
-
     }
 }

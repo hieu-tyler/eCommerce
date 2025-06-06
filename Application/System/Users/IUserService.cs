@@ -1,11 +1,14 @@
-﻿namespace Application.System.Users
+﻿using ViewModels.Common;
+using ViewModels.System.Users;
+
+namespace Application.System.Users
 {
     public interface IUserService
     {
-        Task<string> Authenticate(ViewModels.System.Users.LoginRequest request);
+        Task<string> Authenticate(LoginRequest request);
         
-        Task<bool> Register(ViewModels.System.Users.RegisterRequest request);
+        Task<bool> Register(RegisterRequest request);
 
-        //Task<>
+        Task<PageResult<UserViewModel>> GetUsersPaging(GetUserPagingRequest request);
     }
 }

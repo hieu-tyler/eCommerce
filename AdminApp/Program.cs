@@ -14,6 +14,12 @@ public class Program
         // Add services to the container.
         builder.Services.AddControllersWithViews();
         builder.Services.AddHttpClient<IUserApiClient, UserApiClient>();
+        builder.Services.AddHttpContextAccessor();
+
+        builder.Services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout to 30 minutes
+        });
 
         // Add Validation for LoginRequest
         builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
@@ -55,6 +61,7 @@ public class Program
         app.UseRouting();
 
         app.UseAuthentication();
+        app.UseSession(); // Enable session middleware before UseAuthorization
 
         app.UseAuthorization();
 
