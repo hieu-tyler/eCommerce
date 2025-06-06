@@ -61,5 +61,23 @@ namespace AdminApp.Services
 
             return users; // Ensure the deserialized object is returned
         }
+
+        public Task<bool> RegisterUser(RegisterRequest request)
+        {
+            // Serialize the request object to JSON and create an HttpContent object
+            var jsonContent = JsonSerializer.Serialize(request);
+            var httpContent = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+            // Contact the backend API to register the user
+            var response = _httpClient.PostAsync("api/user/register", httpContent).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                return Task.FromResult(true);
+            }
+            else
+            {
+                return Task.FromResult(false);
+            }
+        }
     }
 }

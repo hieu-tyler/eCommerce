@@ -28,7 +28,7 @@ public class Program
             .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
-                options.LoginPath = "/User/Login/"; // Set the login path for unauthenticated users
+                options.LoginPath = "/Login/"; // Set the login path for unauthenticated users
                 options.AccessDeniedPath = "/User/Forbidden/"; // Set the access denied path for unauthorized users
                 //options.ExpireTimeSpan = TimeSpan.FromMinutes(10); // Set the cookie expiration time
                 //options.SlidingExpiration = true; // Enable sliding expiration
