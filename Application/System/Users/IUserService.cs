@@ -9,6 +9,6 @@ namespace Application.System.Users
         
         Task<bool> Register(RegisterRequest request);
 
-        Task<PageResult<UserViewModel>> GetUsersPaging(GetUserPagingRequest request);
+        Task<PageResult<UserViewModel>> GetUserPaging(GetUserPagingRequest request);
     }
 }

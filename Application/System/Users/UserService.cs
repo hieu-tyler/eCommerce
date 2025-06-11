@@ -65,7 +65,7 @@ namespace Application.System.Users
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public async Task<PageResult<UserViewModel>> GetUsersPaging(GetUserPagingRequest request)
+        public async Task<PageResult<UserViewModel>> GetUserPaging(GetUserPagingRequest request)
         {
             var query = _userManager.Users;
             if (!string.IsNullOrEmpty(request.Keyword))

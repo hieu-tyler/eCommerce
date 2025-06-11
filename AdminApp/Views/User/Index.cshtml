@@ -1,5 +1,6 @@
 ﻿@using ViewModels.Common;
-@model PageResult<ViewModels.System.Users.UserViewModel>
+@using ViewModels.System.Users;
+@model PageResult<UserViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -20,9 +21,6 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>
-                            Id
-                        </th>
                         <th>
                             First Name
                         </th>
@@ -49,9 +47,6 @@
                     {
                         <tr>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Id)
-                            </td>
-                            <td>
                                 @Html.DisplayFor(modelItem => item.FirstName)
                             </td>
                             <td>
@@ -70,9 +65,9 @@
                                 @Html.DisplayFor(modelItem => item.UserName)
                             </td>
                             <td>
-                                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
                             </td>
                         </tr>
                     }

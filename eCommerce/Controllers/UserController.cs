@@ -48,7 +48,7 @@ namespace BackendApi.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var users = await _userService.GetUsersPaging(request);
+            var users = await _userService.GetUserPaging(request);
             return Ok(users);
         }
     }
