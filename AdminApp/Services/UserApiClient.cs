@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Text;
 using ViewModels.Common;
 using ViewModels.System.Users;
 
@@ -21,19 +21,44 @@ namespace AdminApp.Services
             _httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
         }
 
-        public async Task<string> Authenticate(LoginRequest request)
+        public async Task<ApiResult<string>> Authenticate(LoginRequest request)
         {
             // Serialize the request object to JSON and create an HttpContent object
-            var jsonContent = JsonSerializer.Serialize(request);
+            var jsonContent = System.Text.Json.JsonSerializer.Serialize(request);
             var httpContent = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
             // Contact the backend API to authenticate the user port 7215
             var response = await _httpClient.PostAsync("api/user/authenticate", httpContent);
             var token = await response.Content.ReadAsStringAsync();
-            return token;
+            if (response.IsSuccessStatusCode)
+                return new ApiSuccessResult<string>(token);
+            else
+                return new ApiErrorResult<string>("Failed to authenticate user");
+
         }
 
-        public async Task<PageResult<UserViewModel>> GetUserPaging(GetUserPagingRequest request)
+        public async Task<ApiResult<UserViewModel>> GetById(Guid id)
+        {
+            var session = _httpContextAccessor.HttpContext?.Session;
+            if (session == null || !session.TryGetValue("Token", out var tokenBytes))
+            {
+                throw new InvalidOperationException("Session is not available or BearerToken is not set.");
+            }
+            var token = session.GetString("Token");
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await _httpClient.GetAsync($"/api/user/{id}");
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<ApiResult<UserViewModel>>(body)!;
+            }
+
+
+            return new ApiErrorResult<UserViewModel>("Failed to get by Id");
+        }
+
+        public async Task<ApiResult<PageResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request)
         {
             // Preprare _httpClient for the request
             var session = _httpContextAccessor.HttpContext?.Session;
@@ -41,9 +66,7 @@ namespace AdminApp.Services
             {
                 throw new InvalidOperationException("Session is not available or BearerToken is not set.");
             }
-
             var token = session.GetString("Token");
-
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             // Contact the backend API to authenticate the user port 
@@ -53,31 +76,37 @@ namespace AdminApp.Services
 
             var body = await response.Content.ReadAsStringAsync();
 
-            var users = JsonSerializer.Deserialize<PageResult<UserViewModel>>(body, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-                Converters = { new JsonStringEnumConverter() } // Handle enum serialization if needed
-            });
+            var users = JsonConvert.DeserializeObject<PageResult<UserViewModel>>(body);
 
-            return users; // Ensure the deserialized object is returned
+            return new ApiSuccessResult<PageResult<UserViewModel>>(users);
         }
 
-        public Task<bool> RegisterUser(RegisterRequest request)
+        public async Task<ApiResult<bool>> RegisterUser(RegisterRequest request)
         {
             // Serialize the request object to JSON and create an HttpContent object
-            var jsonContent = JsonSerializer.Serialize(request);
+            var jsonContent = System.Text.Json.JsonSerializer.Serialize(request);
             var httpContent = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
             // Contact the backend API to register the user
             var response = _httpClient.PostAsync("api/user/register", httpContent).Result;
 
+            var result = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
-            {
-                return Task.FromResult(true);
-            }
-            else
-            {
-                return Task.FromResult(false);
-            }
+                return new ApiSuccessResult<bool>(true);
+
+            return new ApiErrorResult<bool>("Failed to register user");
+        }
+
+        public async Task<ApiResult<bool>> UpdateUser(Guid id, UpdateRequest request)
+        {
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync($"/api/user/{id}", httpContent);
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return new ApiSuccessResult<bool>(true);
+
+            return new ApiErrorResult<bool>("Failed to update user");
         }
     }
 }

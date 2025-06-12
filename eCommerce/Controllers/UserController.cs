@@ -24,9 +24,9 @@ namespace BackendApi.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var token = await _userService.Authenticate(request);
-            if (string.IsNullOrEmpty(token)) return BadRequest("Username or password is incorrect");
-            return Ok(token);
+            var result = await _userService.Authenticate(request);
+            if (!result.IsSuccess) return BadRequest("Username or password is incorrect");
+            return Ok(result.ResultObject);
         }
 
         [HttpPost("register")]
@@ -36,7 +36,19 @@ namespace BackendApi.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var result = await _userService.Register(request);
-            if (!result) return BadRequest("Registration failed");
+            if (!result.IsSuccess) return BadRequest("Registration failed");
+
+            return Ok("Registration successful");
+        }
+
+        [HttpPut("{id}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateRequest request)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var result = await _userService.Update(id, request);
+            if (!result.IsSuccess) return BadRequest("Registration failed");
 
             return Ok("Registration successful");
         }
@@ -48,8 +60,15 @@ namespace BackendApi.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var users = await _userService.GetUsersPaging(request);
-            return Ok(users);
+            var users = await _userService.GetUserPaging(request);
+            return Ok(users.ResultObject);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var user = await _userService.GetById(id);
+            return Ok(user);
         }
     }
 }
