@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using ViewModels.Common;
@@ -37,12 +39,23 @@ namespace AdminApp.Services
 
         public async Task<ApiResult<UserViewModel>> GetById(Guid id)
         {
-            var response = await _httpClient.GetAsync($"/api/users/{id}");
+            var session = _httpContextAccessor.HttpContext?.Session;
+            if (session == null || !session.TryGetValue("Token", out var tokenBytes))
+            {
+                throw new InvalidOperationException("Session is not available or BearerToken is not set.");
+            }
+            var token = session.GetString("Token");
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await _httpClient.GetAsync($"/api/user/{id}");
             var body = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
-                return JsonConvert.DeserializeObject<ApiSuccessResult<UserViewModel>>(body);
+            {
+                return JsonConvert.DeserializeObject<ApiResult<UserViewModel>>(body)!;
+            }
 
-            return JsonConvert.DeserializeObject<ApiErrorResult<UserViewModel>>("Failed to get by Id");
+
+            return new ApiErrorResult<UserViewModel>("Failed to get by Id");
         }
 
         public async Task<ApiResult<PageResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request)
@@ -53,9 +66,7 @@ namespace AdminApp.Services
             {
                 throw new InvalidOperationException("Session is not available or BearerToken is not set.");
             }
-
             var token = session.GetString("Token");
-
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             // Contact the backend API to authenticate the user port 
@@ -65,8 +76,9 @@ namespace AdminApp.Services
 
             var body = await response.Content.ReadAsStringAsync();
 
-            var users = JsonConvert.DeserializeObject<ApiSuccessResult<PageResult<UserViewModel>>>(body);
-            return users;
+            var users = JsonConvert.DeserializeObject<PageResult<UserViewModel>>(body);
+
+            return new ApiSuccessResult<PageResult<UserViewModel>>(users);
         }
 
         public async Task<ApiResult<bool>> RegisterUser(RegisterRequest request)
@@ -79,9 +91,9 @@ namespace AdminApp.Services
 
             var result = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
-                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
+                return new ApiSuccessResult<bool>(true);
 
-            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>("Failed to register user");
+            return new ApiErrorResult<bool>("Failed to register user");
         }
 
         public async Task<ApiResult<bool>> UpdateUser(Guid id, UpdateRequest request)
@@ -89,12 +101,12 @@ namespace AdminApp.Services
             var json = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PutAsync($"/api/users/{id}", httpContent);
+            var response = await _httpClient.PutAsync($"/api/user/{id}", httpContent);
             var result = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
-                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
+                return new ApiSuccessResult<bool>(true);
 
-            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>("Failed to update user");
+            return new ApiErrorResult<bool>("Failed to update user");
         }
     }
 }
