@@ -30,7 +30,7 @@ namespace Application.System.Users
 
         public async Task<ApiResult<string>> Authenticate(LoginRequest request)
         {
-            var username = await _userManager.FindByNameAsync(request.UserName); 
+            var username = await _userManager.FindByNameAsync(request.UserName);
             if (username == null) return new ApiErrorResult<string>("No user with this info");
 
             var result = await _signInManager.PasswordSignInAsync(username, request.Password, request.RememberMe, true);
@@ -64,6 +64,19 @@ namespace Application.System.Users
             return new ApiSuccessResult<string>(new JwtSecurityTokenHandler().WriteToken(token));
         }
 
+        public async Task<ApiResult<bool>> Delete(Guid id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null)
+            {
+                return new ApiErrorResult<bool>("User không tồn tại");
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+
+            return new ApiSuccessResult<bool>(result.Succeeded);
+        }
+
         public async Task<ApiResult<UserViewModel>> GetById(Guid id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
@@ -85,7 +98,7 @@ namespace Application.System.Users
             return new ApiSuccessResult<UserViewModel>(userViewModel);
         }
 
-public async Task<ApiResult<PageResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request)
+        public async Task<ApiResult<PageResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request)
         {
             var query = _userManager.Users;
             if (!string.IsNullOrEmpty(request.Keyword))

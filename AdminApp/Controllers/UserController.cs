@@ -89,5 +89,28 @@ namespace AdminApp.Controllers
             ModelState.AddModelError("", result.Message);
             return View(request);
         }
+
+        [HttpGet]
+        public IActionResult Delete(Guid id)
+        {
+            return View(new DeleteRequest
+            {
+                Id = id
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(DeleteRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _userApiClient.DeleteUser(request.Id);
+            if (result.IsSuccess)
+                return RedirectToAction("Index");
+
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
     }
 }
