@@ -21,8 +21,8 @@ namespace AdminApp.Controllers
                 PageSize = pageSize,
                 Keyword = keyword,
             };
-            
-            
+            ViewBag.Keyword = keyword;
+
             var data = await _userApiClient.GetUserPaging(request);
             return View(data.ResultObject);
         }
