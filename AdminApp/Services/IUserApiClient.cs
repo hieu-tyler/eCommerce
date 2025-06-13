@@ -14,5 +14,6 @@ namespace AdminApp.Services
         Task<ApiResult<bool>> UpdateUser(Guid id, UpdateRequest request);
 
         Task<ApiResult<UserViewModel>> GetById(Guid id);
+        Task<ApiResult<bool>> DeleteUser(Guid id);
     }
 }

@@ -37,6 +37,24 @@ namespace AdminApp.Services
 
         }
 
+        public async Task<ApiResult<bool>> DeleteUser(Guid id)
+        {
+            var session = _httpContextAccessor.HttpContext?.Session;
+            if (session == null || !session.TryGetValue("Token", out var tokenBytes))
+            {
+                throw new InvalidOperationException("Session is not available or BearerToken is not set.");
+            }
+            var token = session.GetString("Token");
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var result = await _httpClient.DeleteAsync($"/api/user/{id}");
+            var body = await result.Content.ReadAsStringAsync();
+            if (result.IsSuccessStatusCode)
+                return new ApiSuccessResult<bool>(result.IsSuccessStatusCode);
+            else
+                return new ApiErrorResult<bool>("Failed to authenticate user");
+        }
+
         public async Task<ApiResult<UserViewModel>> GetById(Guid id)
         {
             var session = _httpContextAccessor.HttpContext?.Session;
