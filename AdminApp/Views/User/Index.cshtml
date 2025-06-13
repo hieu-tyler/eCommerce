@@ -6,6 +6,14 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section Scripts {
+    <script>
+        setTimeout(function () {
+            $('#messageAlert').fadeOut('slow');
+        }, 3000); // 3 seconds
+
+    </script>
+}
 
 <div class="container-fluid px-4">
     <h1 class="mt-4">List User</h1>
@@ -21,11 +29,7 @@
                 </div>
                 <div class="col-6">
                     <form asp-action="Index" method="get">
-                        
                         <div class="row">
-                            @* <div class="col-1">
-                                <label for="keyword"><b>Filter</b></label>
-                            </div> *@
                             <div class="col-9">
                                 <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
                             </div>
@@ -39,6 +43,17 @@
             </div>
         </div>
         <div class="card-body">
+            @if(ViewBag.Success == true)
+            {
+                <div id="messageAlert" class="alert alert-success">
+                    <strong>Success!</strong> @ViewBag.Message
+                </div>
+            } else
+            {
+                <div id="messageAlert" class="alert alert-danger">
+                    <strong>Error!</strong> @ViewBag.Message
+                </div>
+            }
             <div class="table-responsive">
                 <table class="table table-bordered">
                     <thead>

@@ -22,7 +22,11 @@ namespace AdminApp.Controllers
                 Keyword = keyword,
             };
             ViewBag.Keyword = keyword;
-
+            if (TempData["result"] != null)
+            {
+                ViewBag.Success = true;
+                ViewBag.Message = TempData["result"].ToString();
+            }
             var data = await _userApiClient.GetUserPaging(request);
             return View(data.ResultObject);
         }
@@ -49,7 +53,10 @@ namespace AdminApp.Controllers
 
             var result = await _userApiClient.RegisterUser(request);
             if (result.IsSuccess)
+            {
+                TempData["result"] = "Create user successfully!";
                 return RedirectToAction("Index");
+            }
 
             ModelState.AddModelError("", result.Message);
             return View(request);
@@ -84,7 +91,10 @@ namespace AdminApp.Controllers
 
             var result = await _userApiClient.UpdateUser(request.Id, request);
             if (result.IsSuccess)
+            {
+                TempData["result"] = "Update user successfully!";
                 return RedirectToAction("Index");
+            }
 
             ModelState.AddModelError("", result.Message);
             return View(request);
@@ -107,7 +117,10 @@ namespace AdminApp.Controllers
 
             var result = await _userApiClient.DeleteUser(request.Id);
             if (result.IsSuccess)
+            {
+                TempData["result"] = "Delete user successfully!";
                 return RedirectToAction("Index");
+            }
 
             ModelState.AddModelError("", result.Message);
             return View(request);
