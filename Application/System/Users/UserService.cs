@@ -146,22 +146,52 @@ namespace Application.System.Users
             {
                 return new ApiErrorResult<bool>("The email has existed");
             }
-
-            user = new AppUser()
+            
+            var createUser = new AppUser()
             {
-                Dob = request.Dob,
+                UserName = request.UserName,
                 Email = request.Email,
+                PhoneNumber = request.PhoneNumber,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                UserName = request.UserName,
-                PhoneNumber = request.PhoneNumber
+                Dob = request.Dob,
             };
-            var result = await _userManager.CreateAsync(user, request.Password);
+
+            var result = await _userManager.CreateAsync(createUser, request.Password);
             if (result.Succeeded)
             {
                 return new ApiSuccessResult<bool>(result.Succeeded);
             }
             return new ApiErrorResult<bool>("Failed to sign up");
+        }
+
+        public async Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null)
+            {
+                return new ApiErrorResult<bool>("User not found");
+            }
+            var removedRoles = request.Roles.Where(x => x.Selected == false).Select(x => x.Name).ToList();
+            foreach (var roleName in removedRoles)
+            {
+                if (await _userManager.IsInRoleAsync(user, roleName) == true)
+                {
+                    await _userManager.RemoveFromRoleAsync(user, roleName);
+                }
+            }
+            await _userManager.RemoveFromRolesAsync(user, removedRoles);
+
+            var addedRoles = request.Roles.Where(x => x.Selected).Select(x => x.Name).ToList();
+            foreach (var roleName in addedRoles)
+            {
+                if (await _userManager.IsInRoleAsync(user, roleName) == false)
+                {
+                    await _userManager.AddToRoleAsync(user, roleName);
+                }
+            }
+
+            return new ApiSuccessResult<bool>();
         }
 
         public async Task<ApiResult<bool>> Update(Guid id, UpdateRequest request)
