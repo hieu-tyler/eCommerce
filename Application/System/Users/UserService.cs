@@ -114,6 +114,8 @@ public async Task<ApiResult<PageResult<UserViewModel>>> GetUserPaging(GetUserPag
             var pageResult = new PageResult<UserViewModel>()
             {
                 TotalRecords = totalRow,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
                 Items = data,
             };
 
