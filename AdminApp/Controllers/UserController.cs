@@ -27,7 +27,16 @@ namespace AdminApp.Controllers
             return View(data.ResultObject);
         }
 
-        public async Task<IActionResult> Create()
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid id)
+        {
+            var userResult = await _userApiClient.GetById(id);
+
+            return View(userResult.ResultObject);
+        }
+
+        [HttpGet]
+        public IActionResult Create()
         {
             return View();
         }
