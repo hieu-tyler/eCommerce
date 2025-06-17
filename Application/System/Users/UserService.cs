@@ -69,7 +69,7 @@ namespace Application.System.Users
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
             {
-                return new ApiErrorResult<bool>("User không tồn tại");
+                return new ApiErrorResult<bool>("Non existed user");
             }
 
             var result = await _userManager.DeleteAsync(user);
@@ -82,8 +82,10 @@ namespace Application.System.Users
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
             {
-                return new ApiErrorResult<UserViewModel>("User không tồn tại");
+                return new ApiErrorResult<UserViewModel>("Non existed user");
             }
+            var roles = await _userManager.GetRolesAsync(user);
+
             var userViewModel = new UserViewModel()
             {
                 Id = user.Id,
@@ -93,6 +95,7 @@ namespace Application.System.Users
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Dob = user.Dob,
+                Roles = roles
 
             };
             return new ApiSuccessResult<UserViewModel>(userViewModel);
@@ -172,6 +175,7 @@ namespace Application.System.Users
             {
                 return new ApiErrorResult<bool>("User not found");
             }
+            Console.WriteLine($"Selected Roles {request.Roles}");
             var removedRoles = request.Roles.Where(x => x.Selected == false).Select(x => x.Name).ToList();
             foreach (var roleName in removedRoles)
             {
@@ -180,9 +184,9 @@ namespace Application.System.Users
                     await _userManager.RemoveFromRoleAsync(user, roleName);
                 }
             }
-            await _userManager.RemoveFromRolesAsync(user, removedRoles);
+            //await _userManager.RemoveFromRolesAsync(user, removedRoles);
 
-            var addedRoles = request.Roles.Where(x => x.Selected).Select(x => x.Name).ToList();
+            var addedRoles = request.Roles.Where(x => x.Selected == true).Select(x => x.Name).ToList();
             foreach (var roleName in addedRoles)
             {
                 if (await _userManager.IsInRoleAsync(user, roleName) == false)

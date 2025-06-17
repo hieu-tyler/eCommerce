@@ -47,9 +47,9 @@ namespace BackendApi.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var result = await _userService.Update(id, request);
-            if (!result.IsSuccess) return BadRequest("Registration failed");
+            if (!result.IsSuccess) return BadRequest("Update failed");
 
-            return Ok("Registration successful");
+            return Ok("Update successful");
         }
 
         [HttpPut("{id}/roles")]
@@ -58,9 +58,9 @@ namespace BackendApi.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var result = await _userService.RoleAssign(id, request);
-            if (!result.IsSuccess) return BadRequest("Registration failed");
+            if (!result.IsSuccess) return BadRequest(result);
 
-            return Ok("Registration successful");
+            return Ok("Assigning role successful");
         }
 
 

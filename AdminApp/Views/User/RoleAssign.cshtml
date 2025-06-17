@@ -24,11 +24,11 @@
                     <div class="form-group">
                         <label>
                             @Model.Roles[i].Name
-                            <input name="Roles[@i].Selected" type="hidden" value="false" />
-                            <input type="checkbox" asp-for="Roles[i].Selected" />
-                            <input type="hidden" asp-for="Roles[i].Id" />
-                            <input type="hidden" asp-for="Roles[i].Name" />
                         </label>
+                        <input type="checkbox" asp-for="@Model.Roles[i].Selected" />
+                        <input type="hidden" asp-for="@Model.Roles[i].Id" />
+                        <input type="hidden" asp-for="@Model.Roles[i].Name" />
+                        
                     </div>
                 }
 
@@ -38,8 +38,5 @@
             </form>
         </div>
     </div>
-</div>
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
