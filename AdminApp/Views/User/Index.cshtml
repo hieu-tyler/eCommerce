@@ -48,12 +48,7 @@
                 <div id="messageAlert" class="alert alert-success">
                     <strong>Success!</strong> @ViewBag.Message
                 </div>
-            } else
-            {
-                <div id="messageAlert" class="alert alert-danger">
-                    <strong>Error!</strong> @ViewBag.Message
-                </div>
-            }
+            } 
             <div class="table-responsive">
                 <table class="table table-bordered">
                     <thead>
@@ -104,7 +99,8 @@
                                 <td>
                                     @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                                     @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }) |
+                                    @Html.ActionLink("Assign Role", "RoleAssign", new { id = item.Id })
                                 </td>
                             </tr>
                         }

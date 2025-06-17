@@ -13,8 +13,6 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
-        builder.Services.AddHttpClient<IUserApiClient, UserApiClient>();
-        builder.Services.AddHttpContextAccessor();
 
         builder.Services.AddSession(options =>
         {
@@ -35,7 +33,10 @@ public class Program
             });
 
         // Register HttpClient for API calls
+        builder.Services.AddHttpClient<IUserApiClient, UserApiClient>();
+        builder.Services.AddHttpContextAccessor();
         builder.Services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
+        builder.Services.AddTransient<IRoleApiClient, RoleApiClient>();
 
 
         // if DEBUG

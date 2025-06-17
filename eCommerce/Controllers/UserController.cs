@@ -42,15 +42,25 @@ namespace BackendApi.Controllers
         }
 
         [HttpPut("{id}")]
-        [AllowAnonymous]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var result = await _userService.Update(id, request);
-            if (!result.IsSuccess) return BadRequest("Registration failed");
+            if (!result.IsSuccess) return BadRequest("Update failed");
 
-            return Ok("Registration successful");
+            return Ok("Update successful");
+        }
+
+        [HttpPut("{id}/roles")]
+        public async Task<IActionResult> RoleAssign(Guid id, [FromBody] RoleAssignRequest request)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var result = await _userService.RoleAssign(id, request);
+            if (!result.IsSuccess) return BadRequest(result);
+
+            return Ok("Assigning role successful");
         }
 
 

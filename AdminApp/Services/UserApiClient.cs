@@ -114,6 +114,28 @@ namespace AdminApp.Services
             return new ApiErrorResult<bool>("Failed to register user");
         }
 
+        public async Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request)
+        {
+            // Preprare _httpClient for the request
+            var session = _httpContextAccessor.HttpContext?.Session;
+            if (session == null || !session.TryGetValue("Token", out var tokenBytes))
+            {
+                throw new InvalidOperationException("Session is not available or BearerToken is not set.");
+            }
+            var token = session.GetString("Token");
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync($"/api/user/{id}/roles", httpContent);
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return new ApiSuccessResult<bool>(true);
+
+            return new ApiErrorResult<bool>("Failed to assign roles");
+        }
+
         public async Task<ApiResult<bool>> UpdateUser(Guid id, UpdateRequest request)
         {
             var json = JsonConvert.SerializeObject(request);
