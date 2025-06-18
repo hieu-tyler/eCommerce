@@ -1,5 +1,6 @@
 using Application.Catalog.Products;
 using Application.Common;
+using Application.System.Roles;
 using Application.System.Users;
 using Data.EFContext;
 using Data.Entities;
@@ -33,9 +34,12 @@ internal class Program
             .AddDefaultTokenProviders();
 
         // Add Dependency Injection
+        builder.Services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
+        builder.Services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
         builder.Services.AddTransient<IProductService, ProductService>();
         builder.Services.AddTransient<IStorageService, FileStorageService>();
         builder.Services.AddTransient<IUserService, UserService>();
+        builder.Services.AddTransient<IRoleService, RoleService>();
 
         // Add AutoMapper
         builder.Services.AddSwaggerGen(c =>
