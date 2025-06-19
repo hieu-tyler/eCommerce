@@ -1,4 +1,4 @@
-﻿using AdminApp.Services;
+﻿using AdminApp.Services.User;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Utilities.SystemConstants.cs;
 using ViewModels.System.Users;
 
 namespace AdminApp.Controllers
@@ -50,7 +51,8 @@ namespace AdminApp.Controllers
                 IsPersistent = false
             };
 
-            HttpContext.Session.SetString("Token", result.ResultObject);
+            HttpContext.Session.SetString(SystemConstants.AppSettings.DefaultLanguageId, _configuration[SystemConstants.AppSettings.DefaultLanguageId]);
+            HttpContext.Session.SetString(SystemConstants.AppSettings.Token, result.ResultObject);
 
             // Sign in the user with the validated token
             await HttpContext.SignInAsync(

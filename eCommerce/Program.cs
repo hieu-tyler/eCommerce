@@ -1,17 +1,15 @@
 using Application.Catalog.Products;
 using Application.Common;
+using Application.System.Languages;
 using Application.System.Roles;
 using Application.System.Users;
 using Data.EFContext;
 using Data.Entities;
-using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using ViewModels.System.Users;
 
 internal class Program
 {
@@ -40,6 +38,7 @@ internal class Program
         builder.Services.AddTransient<IStorageService, FileStorageService>();
         builder.Services.AddTransient<IUserService, UserService>();
         builder.Services.AddTransient<IRoleService, RoleService>();
+        builder.Services.AddTransient<ILanguageService, LanguageService>();
 
         // Add AutoMapper
         builder.Services.AddSwaggerGen(c =>

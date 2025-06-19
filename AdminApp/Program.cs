@@ -1,4 +1,6 @@
-using AdminApp.Services;
+using AdminApp.Services.Language;
+using AdminApp.Services.Role;
+using AdminApp.Services.User;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ViewModels.System.Users;
@@ -37,6 +39,7 @@ public class Program
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
         builder.Services.AddTransient<IRoleApiClient, RoleApiClient>();
+        builder.Services.AddTransient<ILanguageApiClient, LanguageApiClient>();
 
 
         // if DEBUG

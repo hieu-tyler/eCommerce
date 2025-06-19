@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using AdminApp.Models;
 using Microsoft.AspNetCore.Authorization;
+using Utilities.SystemConstants.cs;
 
 namespace AdminApp.Controllers;
 
@@ -29,5 +30,11 @@ public class HomeController : BaseController
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
+    public IActionResult Language(NavigationViewModel viewModel)
+    {
+        HttpContext.Session.SetString(SystemConstants.AppSettings.DefaultLanguageId, viewModel.CurrentLanguageId);
+        return RedirectToAction("Index");
     }
 }

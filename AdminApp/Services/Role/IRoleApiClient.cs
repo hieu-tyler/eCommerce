@@ -1,7 +1,7 @@
 ﻿using ViewModels.Common;
 using ViewModels.System.Roles;
 
-namespace AdminApp.Services
+namespace AdminApp.Services.Role
 {
     public interface IRoleApiClient
     {
