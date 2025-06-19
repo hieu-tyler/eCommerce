@@ -6,26 +6,26 @@ using System.Text;
 using ViewModels.Common;
 using ViewModels.System.Users;
 
-namespace AdminApp.Services
+namespace AdminApp.Services.User
 {
-    public class UserApiClient : IUserApiClient
+    public class UserApiClient : BaseApiClient, IUserApiClient
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public UserApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+        public UserApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IConfiguration configuration) 
+            : base(httpClient, httpContextAccessor, configuration)
         {
             _httpClient = httpClient;
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
-            _httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
         }
 
         public async Task<ApiResult<string>> Authenticate(LoginRequest request)
         {
             // Serialize the request object to JSON and create an HttpContent object
             var jsonContent = System.Text.Json.JsonSerializer.Serialize(request);
-            var httpContent = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
             // Contact the backend API to authenticate the user port 7215
             var response = await _httpClient.PostAsync("api/user/authenticate", httpContent);
@@ -103,7 +103,7 @@ namespace AdminApp.Services
         {
             // Serialize the request object to JSON and create an HttpContent object
             var jsonContent = System.Text.Json.JsonSerializer.Serialize(request);
-            var httpContent = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             // Contact the backend API to register the user
             var response = _httpClient.PostAsync("api/user/register", httpContent).Result;
 

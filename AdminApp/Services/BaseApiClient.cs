@@ -1,26 +1,25 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Newtonsoft.Json;
-using System.Net.Http;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
+using System.Text.Json;
+using Utilities.SystemConstants.cs;
 using ViewModels.Common;
-using ViewModels.System.Roles;
 using ViewModels.System.Users;
 
 namespace AdminApp.Services
 {
-    public class RoleApiClient : IRoleApiClient
+    public class BaseApiClient
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public RoleApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+        public BaseApiClient(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
             _httpClient = httpClient;
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
-            _httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            _httpClient.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
         }
-        public async Task<ApiResult<List<RoleViewModel>>> GetAll()
+
+        protected async Task<TResponse> GetAsync<TResponse>(string url)
         {
             var session = _httpContextAccessor.HttpContext?.Session;
             if (session == null || !session.TryGetValue("Token", out var tokenBytes))
@@ -29,17 +28,21 @@ namespace AdminApp.Services
             }
             var token = session.GetString("Token");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            var response = await _httpClient.GetAsync($"/api/roles");
+            var response = await _httpClient.GetAsync(url);
             var body = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
-                List<RoleViewModel> objList = (List<RoleViewModel>)JsonConvert.DeserializeObject(body, typeof(List<RoleViewModel>));
-                return new ApiSuccessResult<List<RoleViewModel>>(objList);
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                TResponse myDeserializedObjList = JsonSerializer.Deserialize<TResponse>(body, options);
+                
+
+                return myDeserializedObjList;
             }
-
-            return new ApiErrorResult<List<RoleViewModel>>("Failed to get all roles");
-
+            return JsonSerializer.Deserialize<TResponse>(body);
         }
     }
 }

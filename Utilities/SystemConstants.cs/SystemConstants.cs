@@ -18,6 +18,7 @@ namespace Utilities.SystemConstants.cs
         {
             public const string DefaultLanguageId = "DefaultLanguageId"; // Key for default language ID in appsettings.json
             public const string Token = "Token";
+            public const string BaseAddress = "BaseAddress"; // Key for base address of the API in appsettings.json
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using ViewModels.Common;
 using ViewModels.System.Users;
 
-namespace AdminApp.Services
+namespace AdminApp.Services.User
 {
     public interface IUserApiClient
     {
