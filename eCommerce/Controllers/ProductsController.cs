@@ -31,11 +31,11 @@ namespace BackendApi.Controllers
             return Ok(product);
         }
 
-        // lhocalstart:5000/api/products/public-paging?categoryId=1&pageIndex
-        [HttpGet("{languageId}")]
-        public async Task<IActionResult> GetAllPaging([FromQuery] GetProductPagingRequest request, string languageId)
+        // localhost:5000/api/products/paging?categoryId=1&pageIndex
+        [HttpGet("paging")]
+        public async Task<IActionResult> GetAllPaging([FromQuery] GetProductPagingRequest request)
         {
-            var products = await _productService.GetAllByCategoryId(request, languageId);
+            var products = await _productService.GetAllPaging(request);
 
             return Ok(products);
         }

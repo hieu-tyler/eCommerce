@@ -1,0 +1,106 @@
+﻿@using ViewModels.Common;
+@using ViewModels.System.Users;
+@model PageResult<ViewModels.Catalog.Products.ProductViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts {
+    <script>
+        setTimeout(function () {
+            $('#messageAlert').fadeOut('slow');
+        }, 3000); // 3 seconds
+
+    </script>
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">List User</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active">Tables</li>
+    </ol>
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <a class="btn-success btn" asp-controller="Product" asp-action="Create">Create New</a>
+                </div>
+                <div class="col-6">
+                    <form asp-action="Index" method="get">
+                        <div class="row">
+                            <div class="col-9">
+                                <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
+                            </div>
+                            <div class="col-3">
+                                <button class="btn btn-primary" type="submit">Find</button>
+                                <button class="btn btn-secondary" type="button" oncClick="window.location.href='/Product/Index'">Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (ViewBag.Success == true)
+            {
+                <div id="messageAlert" class="alert alert-success">
+                    <strong>Success!</strong> @ViewBag.Message
+                </div>
+            }
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                Product ID
+                            </th>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Original Price
+                            </th>
+                            <th>
+                                Selling Price
+                            </th>
+                            <th>
+                                Stock Num
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.OriginalPrice)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Price)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Stock)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }) |
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @await Component.InvokeAsync("Pager", Model)
+        </div>
+    </div>
+</div>

@@ -30,19 +30,18 @@ namespace AdminApp.Services
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.GetAsync(url);
             var body = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
             if (response.IsSuccessStatusCode)
             {
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
 
                 TResponse myDeserializedObjList = JsonSerializer.Deserialize<TResponse>(body, options);
                 
-
                 return myDeserializedObjList;
             }
-            return JsonSerializer.Deserialize<TResponse>(body);
+            return JsonSerializer.Deserialize<TResponse>(body, options);
         }
     }
 }
