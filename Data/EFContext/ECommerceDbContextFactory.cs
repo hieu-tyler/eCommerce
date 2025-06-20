@@ -10,14 +10,14 @@ namespace Data.EFContext
         public ECommerceDbContext CreateDbContext(string[] args)
         {
             IConfigurationRoot configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
+                .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../eCommerce"))
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
                 .Build();
 
             var connectionString = configuration.GetConnectionString("ECommerceDb");
             
             var optionsBuilder = new DbContextOptionsBuilder<ECommerceDbContext>();
-            optionsBuilder.UseSqlServer(connectionString, b => b.MigrationsAssembly("BackendApi"));
+            optionsBuilder.UseSqlServer(connectionString, b => b.MigrationsAssembly("Data"));
 
             return new ECommerceDbContext(optionsBuilder.Options);
         }
