@@ -17,7 +17,7 @@ namespace Data.EFContext
             var connectionString = configuration.GetConnectionString("ECommerceDb");
             
             var optionsBuilder = new DbContextOptionsBuilder<ECommerceDbContext>();
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseSqlServer(connectionString, b => b.MigrationsAssembly("BackendApi"));
 
             return new ECommerceDbContext(optionsBuilder.Options);
         }

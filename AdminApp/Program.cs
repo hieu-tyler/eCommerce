@@ -1,4 +1,5 @@
 using AdminApp.Services.Language;
+using AdminApp.Services.Product;
 using AdminApp.Services.Role;
 using AdminApp.Services.User;
 using FluentValidation;
@@ -40,6 +41,7 @@ public class Program
         builder.Services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
         builder.Services.AddTransient<IRoleApiClient, RoleApiClient>();
         builder.Services.AddTransient<ILanguageApiClient, LanguageApiClient>();
+        builder.Services.AddTransient<IProductApiClient, ProductApiClient>();
 
 
         // if DEBUG
