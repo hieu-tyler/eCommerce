@@ -1,3 +1,4 @@
+using Application.Catalog.Categories;
 using Application.Catalog.Products;
 using Application.Common;
 using Application.System.Languages;
@@ -39,6 +40,7 @@ internal class Program
         builder.Services.AddTransient<IUserService, UserService>();
         builder.Services.AddTransient<IRoleService, RoleService>();
         builder.Services.AddTransient<ILanguageService, LanguageService>();
+        builder.Services.AddTransient<ICategoryService, CategoryService>();
 
         // Add AutoMapper
         builder.Services.AddSwaggerGen(c =>

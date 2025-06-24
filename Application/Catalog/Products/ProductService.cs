@@ -98,17 +98,17 @@ namespace Application.Catalog.Products
             // Select join
             var query = from p in _context.Products
                         join pt in _context.ProductTranslations on p.Id equals pt.ProductId
-                        //join pic in _context.ProductInCategories on p.Id equals pic.ProductId
-                        //join c in _context.Categories on pic.CategoryId equals c.Id
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                        join c in _context.Categories on pic.CategoryId equals c.Id
                         where pt.LanguageId == request.LanguageId
-                        select new { p, pt };
+                        select new { p, pt, pic };
 
             // Filter
             if (!string.IsNullOrEmpty(request.Keyword))
                 query = query.Where(x => x.pt.Name.Contains(request.Keyword));
 
-            //if (request.CategoryId != null && request.CategoryId.Value > 0)
-            //    query = query.Where(x => request.CategoryId == x.pic.CategoryId);
+            if (request.CategoryId != null && request.CategoryId.Value > 0)
+                query = query.Where(x => request.CategoryId == x.pic.CategoryId);
 
             // Paging
             int totalRow = await query.CountAsync();
