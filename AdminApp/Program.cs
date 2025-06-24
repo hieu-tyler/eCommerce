@@ -1,3 +1,4 @@
+using AdminApp.Services.Category;
 using AdminApp.Services.Language;
 using AdminApp.Services.Product;
 using AdminApp.Services.Role;
@@ -42,6 +43,7 @@ public class Program
         builder.Services.AddTransient<IRoleApiClient, RoleApiClient>();
         builder.Services.AddTransient<ILanguageApiClient, LanguageApiClient>();
         builder.Services.AddTransient<IProductApiClient, ProductApiClient>();
+        builder.Services.AddTransient<ICategoryApiClient, CategoryApiClient>();
 
 
         // if DEBUG

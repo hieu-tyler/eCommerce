@@ -51,7 +51,7 @@ namespace AdminApp.Services.Product
             requestContent.Add(new StringContent(request.SeoDescription.ToString()), "seoDescription");
             requestContent.Add(new StringContent(request.SeoTitle.ToString()), "seoTitle");
             requestContent.Add(new StringContent(request.SeoAlias.ToString()), "seoAlias");
-            requestContent.Add(new StringContent(languageId), "languageId");
+            requestContent.Add(new StringContent(request.LanguageId != null ? request.LanguageId : languageId), "languageId");
 
             var response = await _httpClient.PostAsync($"/api/products/", requestContent);
             return response.IsSuccessStatusCode;
@@ -61,7 +61,7 @@ namespace AdminApp.Services.Product
         {
             var data = await GetAsync<PageResult<ProductViewModel>>(
                 $"/api/products/paging?pageIndex={request.PageIndex}" +
-                $"&pageSize={request.PageSize}" +
+                $"&pageSize={request.PageSize}&categoryId={request.CategoryId}" +
                 $"&keyword={request.Keyword}&languageId={request.LanguageId}");
 
             return data;
