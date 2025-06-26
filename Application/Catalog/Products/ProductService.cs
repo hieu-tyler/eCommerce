@@ -1,17 +1,14 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using System;
-using System.Net.Http.Headers;
-using System.Reflection.Metadata.Ecma335;
-using Microsoft.AspNetCore.Http;
-using Application.Common;
+﻿using Application.Common;
 using Data.EFContext;
 using Data.Entities;
-using ViewModels.Catalog.Products;
-using ViewModels.Catalog.ProductImages;
-using ViewModels.Common;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using System.Net.Http.Headers;
 using Utilities.Exceptions;
+using ViewModels.Catalog.Categories;
+using ViewModels.Catalog.ProductImages;
+using ViewModels.Catalog.Products;
+using ViewModels.Common;
 
 namespace Application.Catalog.Products
 {
@@ -98,10 +95,12 @@ namespace Application.Catalog.Products
             // Select join
             var query = from p in _context.Products
                         join pt in _context.ProductTranslations on p.Id equals pt.ProductId
-                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
-                        join c in _context.Categories on pic.CategoryId equals c.Id
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                        from pic in ppic.DefaultIfEmpty()
+                        join c in _context.Categories on pic.CategoryId equals c.Id into picc
+                        from c in picc.DefaultIfEmpty()
                         where pt.LanguageId == request.LanguageId
-                        select new { p, pt, pic };
+                        select new { p, pt, pic, c };
 
             // Filter
             if (!string.IsNullOrEmpty(request.Keyword))
@@ -118,7 +117,7 @@ namespace Application.Catalog.Products
                     .Take(request.PageSize)
                     .Select(x => new ProductViewModel()
                     {
-                        //Id = x.p.Id,
+                        Id = x.p.Id,
                         Name = x.pt.Name,
                         DateCreated = x.p.DateCreated,
                         Description = x.pt.Description,
@@ -195,6 +194,12 @@ namespace Application.Catalog.Products
             var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(
                 x => x.ProductId == productId && x.LanguageId == languageId);
 
+            var categories = await (from c in _context.Categories
+                                    join ct in _context.CategoryTranslations on c.Id equals ct.CategoryId
+                                    join pic in _context.ProductInCategories on c.Id equals pic.CategoryId
+                                    where pic.ProductId == productId && ct.LanguageId == languageId
+                                    select ct.Name).ToListAsync();
+
             if (productTranslation == null) throw new ECommerceException("No product translation");
 
             var productViewModel = new ProductViewModel()
@@ -211,7 +216,8 @@ namespace Application.Catalog.Products
                 SeoDescription = productTranslation != null ? productTranslation.SeoDescription : null,
                 SeoTitle = productTranslation != null ? productTranslation.SeoTitle : null,
                 Stock = product.Stock,
-                ViewCount = product.ViewCount
+                ViewCount = product.ViewCount,
+                Categories = categories,
             };
 
             return productViewModel;
@@ -239,7 +245,7 @@ namespace Application.Catalog.Products
 
             _context.ProductImages.Add(image);
             await _context.SaveChangesAsync();
-            return image.Id; 
+            return image.Id;
         }
 
         public async Task<int> RemoveImages(int imageId)
@@ -288,32 +294,34 @@ namespace Application.Catalog.Products
 
         public async Task<ProductImageViewModel> GetImageById(int imageId)
         {
-           var searchedImage = await _context.ProductImages
-                .Where(x => x.Id == imageId)
-                .Select(x => new ProductImageViewModel()
-                {
-                    Caption = x.Caption,
-                    DateCreated = x.DateCreated,
-                    FileSize = x.FileSize,
-                    ImagePath = x.ImagePath,
-                    IsDefault = x.IsDefault,
-                    ProductId = x.ProductId,
-                    SortOrddr = x.SortOrder
-                }).FirstOrDefaultAsync();
+            var searchedImage = await _context.ProductImages
+                 .Where(x => x.Id == imageId)
+                 .Select(x => new ProductImageViewModel()
+                 {
+                     Caption = x.Caption,
+                     DateCreated = x.DateCreated,
+                     FileSize = x.FileSize,
+                     ImagePath = x.ImagePath,
+                     IsDefault = x.IsDefault,
+                     ProductId = x.ProductId,
+                     SortOrddr = x.SortOrder
+                 }).FirstOrDefaultAsync();
 
             if (searchedImage == null) throw new ECommerceException($"Cannot find product image with id: {imageId}");
             else return searchedImage;
         }
 
-        public async Task<PageResult<ProductViewModel>> GetAllByCategoryId(GetProductPagingRequest request, string languageId)
+        public async Task<PageResult<ProductViewModel>> GetAllByCategoryId(GetProductPagingRequest request)
         {
             // Select join
             var query = from p in _context.Products
                         join pt in _context.ProductTranslations on p.Id equals pt.ProductId
-                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
-                        join c in _context.Categories on pic.CategoryId equals c.Id
-                        where pt.LanguageId == languageId
-                        select new { p, pt, pic };
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                        from pic in ppic.DefaultIfEmpty()
+                        join c in _context.Categories on pic.CategoryId equals c.Id into picc
+                        from c in picc.DefaultIfEmpty()
+                        where pt.LanguageId == request.LanguageId
+                        select new { p, pt, pic, c };
 
             // Filter
             if (request.CategoryId.HasValue && request.CategoryId.Value > 0)
@@ -351,6 +359,37 @@ namespace Application.Catalog.Products
             };
 
             return pageResult;
+        }
+
+        public async Task<ApiResult<bool>> CategoryAssign(int productId, CategoryAssignRequest request)
+        {
+            var targetedProduct = await _context.Products.FindAsync(productId);
+
+            if (targetedProduct == null)
+            {
+                return new ApiErrorResult<bool>($"Error retrieving product with id {productId}");
+            }
+
+            foreach (var category in request.Categories)
+            {
+                var productInCategory = await _context.ProductInCategories
+                    .FirstOrDefaultAsync(x => x.CategoryId == int.Parse(category.Id)
+                    && x.ProductId == productId);
+                if (productInCategory != null && category.Selected == false)
+                {
+                    _context.ProductInCategories.Remove(productInCategory);
+                }
+                else if (productInCategory == null && category.Selected)
+                {
+                    await _context.ProductInCategories.AddAsync(new ProductInCategory()
+                    {
+                        CategoryId = int.Parse(category.Id),
+                        ProductId = productId
+                    });
+                }
+            }
+            await _context.SaveChangesAsync();
+            return new ApiSuccessResult<bool>(true);
         }
     }
 }

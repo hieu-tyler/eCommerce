@@ -12,7 +12,7 @@ namespace AdminApp.Services.Category
 
         public async Task<ApiResult<List<CategoryViewModel>>> GetAll(string languageId)
         {
-            var categories = await GetListAsync<CategoryViewModel>($"/api/categories/{languageId}");
+            var categories = await GetListAsync<CategoryViewModel>($"/api/categories?languageId={languageId}");
 
             if (categories == null)
             {

@@ -1,5 +1,4 @@
 ﻿using Application.Catalog.Categories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendApi.Controllers
@@ -13,8 +12,8 @@ namespace BackendApi.Controllers
         {
             _categoryService = categoryService;
         }
-        [HttpGet("{languageId}")]
-        public async Task<IActionResult> GetAll(string languageId)
+        [HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] string languageId)
         {
 
             var categories = await _categoryService.GetAll(languageId);

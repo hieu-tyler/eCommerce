@@ -4,16 +4,19 @@ using Data.EFContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ECommerce.Migrations
+namespace Data.Migrations
 {
     [DbContext(typeof(ECommerceDbContext))]
-    partial class ECommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250625151153_FixTranslationSeeding")]
+    partial class FixTranslationSeeding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,7 +181,7 @@ namespace ECommerce.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3b94b020-4066-4d6d-98f1-6e0d5224d979",
+                            ConcurrencyStamp = "a765c5a2-95c2-43c2-9eac-96df226f4fd6",
                             Dob = new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "tedu.international@gmail.com",
                             EmailConfirmed = true,
@@ -187,7 +190,7 @@ namespace ECommerce.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "tedu.international@gmail.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHy0VhtENJQhZPk0hmeyNlS5zka9YlJgY8T5pGmL/ssLmD2rN67iDHxR2n8B1DdTog==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEG4VXFUlfTmn999PhHgicu45Pk68XA64iyYuGq8qSvzH0R4/igl3MBuCsLS++U3VXg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -518,7 +521,7 @@ namespace ECommerce.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2025, 6, 26, 1, 27, 12, 202, DateTimeKind.Local).AddTicks(4296),
+                            DateCreated = new DateTime(2025, 6, 26, 1, 11, 53, 376, DateTimeKind.Local).AddTicks(2994),
                             OriginalPrice = 100000m,
                             Price = 200000m,
                             Stock = 0,

@@ -175,7 +175,7 @@ namespace Application.System.Users
             {
                 return new ApiErrorResult<bool>("User not found");
             }
-            Console.WriteLine($"Selected Roles {request.Roles}");
+            //Console.WriteLine($"Selected Roles {request.Roles}");
             var removedRoles = request.Roles.Where(x => x.Selected == false).Select(x => x.Name).ToList();
             foreach (var roleName in removedRoles)
             {

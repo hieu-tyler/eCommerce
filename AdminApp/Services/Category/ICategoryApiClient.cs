@@ -5,7 +5,7 @@ namespace AdminApp.Services.Category
 {
     public interface ICategoryApiClient
     {
-        Task<ApiResult<List<CategoryViewModel>>> GetAll(string langauageId);
+        Task<ApiResult<List<CategoryViewModel>>> GetAll(string languageId);
 
     }
 }

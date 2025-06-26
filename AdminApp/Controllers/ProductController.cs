@@ -1,8 +1,11 @@
 ﻿using AdminApp.Services.Category;
 using AdminApp.Services.Product;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Utilities.SystemConstants.cs;
+using ViewModels.Catalog.Categories;
 using ViewModels.Catalog.Products;
+using ViewModels.Common;
 
 namespace AdminApp.Controllers
 {
@@ -35,9 +38,16 @@ namespace AdminApp.Controllers
 
             var data = await _productApiClient.GetPaging(request);
             ViewBag.Keyword = keyword;
+            var selectedCategories = categories.ResultObject.Select(x => new SelectListItem()
+            {
+                Value = x.Id.ToString(),
+                Text = x.Name,
+                Selected = categoryId.HasValue && categoryId.Value == x.Id
+            });
+            ViewBag.Categories = selectedCategories;
             if (TempData["result"] != null)
             {
-                ViewBag.SuccessMsg = TempData["result"];
+                ViewBag.SuccessMessage = TempData["result"];
             }
             return View(data);
         }
@@ -64,6 +74,50 @@ namespace AdminApp.Controllers
 
             ModelState.AddModelError("", "Failed to add product");
             return View(request);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CategoryAssign(int id)
+        {
+            var roleAssignRequest = await this.GetCategoryAssignRequest(id);
+            return View(roleAssignRequest);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CategoryAssign(CategoryAssignRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View(request);
+
+            var result = await _productApiClient.CategoryAssign(request.Id, request);
+            if (result.IsSuccess)
+            {
+                TempData["result"] = "Assign roles successfully!";
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+
+        private async Task<CategoryAssignRequest> GetCategoryAssignRequest(int id)
+        {
+            var languageId = HttpContext.Session.GetString(SystemConstants.AppSettings.DefaultLanguageId);
+            var productObj = await _productApiClient.GetById(id, languageId);
+            var categoryInProduct = productObj.ResultObject.Categories;
+            var categoryList = await _categoryApiClient.GetAll(languageId);
+            var categoryAssignRequest = new CategoryAssignRequest();
+            foreach (var category in categoryList.ResultObject)
+            {
+
+                categoryAssignRequest.Categories.Add(new SelectItem()
+                {
+                    Id = category.Id.ToString(),
+                    Name = category.Name,
+                    Selected = categoryInProduct.Contains(category.Name)
+                });
+            }
+            return categoryAssignRequest;
         }
     }
 }

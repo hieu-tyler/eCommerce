@@ -1,8 +1,10 @@
 ﻿using Application.Catalog.Products;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ViewModels.Catalog.Categories;
 using ViewModels.Catalog.ProductImages;
 using ViewModels.Catalog.Products;
+using ViewModels.System.Users;
 
 namespace BackendApi.Controllers
 {
@@ -30,7 +32,7 @@ namespace BackendApi.Controllers
 
             return Ok(product);
         }
-
+                             
         // localhost:5000/api/products/paging?categoryId=1&pageIndex
         [HttpGet("paging")]
         public async Task<IActionResult> GetAllPaging([FromQuery] GetProductPagingRequest request)
@@ -129,6 +131,17 @@ namespace BackendApi.Controllers
             var product = await _productService.GetImageById(imageId);
 
             return CreatedAtAction(nameof(GetById), new { id = productId }, productId);
+        }
+
+        [HttpPut("{productId}/categories")]
+        public async Task<IActionResult> CategoryAssign(int productId, [FromBody] CategoryAssignRequest request)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var result = await _productService.CategoryAssign(productId, request);
+            if (!result.IsSuccess) return BadRequest(result);
+
+            return Ok(result);
         }
     }
 }

@@ -1,8 +1,7 @@
 ﻿using AdminApp.Services.Role;
 using AdminApp.Services.User;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
-using System.Xml.Linq;
+using ViewModels.Common;
 using ViewModels.System.Users;
 
 namespace AdminApp.Controllers
