@@ -36,7 +36,6 @@ namespace AdminApp.Services
             };
             if (response.IsSuccessStatusCode)
             {
-
                 TResponse myDeserializedObjList = JsonSerializer.Deserialize<TResponse>(body, options);
                 
                 return myDeserializedObjList;
@@ -50,13 +49,14 @@ namespace AdminApp.Services
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokens);
 
             var response = await _httpClient.GetAsync(url);
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
             if (response.IsSuccessStatusCode)
             {
                 var body = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<T>>(body, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+                return JsonSerializer.Deserialize<List<T>>(body, options);
             }
 
             throw new Exception($"Cannot get data from API: {url}. Status code: {response.StatusCode}");

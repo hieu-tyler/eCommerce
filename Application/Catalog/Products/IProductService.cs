@@ -1,4 +1,6 @@
-﻿using ViewModels.Catalog.ProductImages;
+﻿using Data.Entities;
+using ViewModels.Catalog.Categories;
+using ViewModels.Catalog.ProductImages;
 using ViewModels.Catalog.Products;
 using ViewModels.Common;
 
@@ -28,11 +30,12 @@ namespace Application.Catalog.Products
         
         Task<int> UpdateImages(int imageId, ProductImageUpdateRequest request);
 
-        public Task<PageResult<ProductViewModel>> GetAllByCategoryId(GetProductPagingRequest request, string languageId);
+        public Task<PageResult<ProductViewModel>> GetAllByCategoryId(GetProductPagingRequest request);
 
         Task<ProductImageViewModel> GetImageById(int imageId);
 
         Task<List<ProductImageViewModel>> GetListImages(int productId);
-        
+
+        Task<ApiResult<bool>> CategoryAssign(int productId, CategoryAssignRequest request);
     }
 }

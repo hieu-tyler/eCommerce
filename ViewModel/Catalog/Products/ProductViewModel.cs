@@ -15,5 +15,7 @@
         public string SeoTitle { set; get; }
         public string SeoAlias { get; set; }
         public string LanguageId { get; set; }
+
+        public List<string> Categories { get; set; } = new List<string>();
     }
 }

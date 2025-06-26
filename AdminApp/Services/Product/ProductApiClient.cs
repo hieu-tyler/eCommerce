@@ -1,7 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure;
+using Microsoft.AspNetCore.Http;
+using System.Collections;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
 using Utilities.SystemConstants.cs;
+using ViewModels.Catalog.Categories;
 using ViewModels.Catalog.Products;
 using ViewModels.Common;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -24,9 +29,9 @@ namespace AdminApp.Services.Product
 
         public async Task<bool> CreateProduct(ProductCreateRequest request)
         {
-            var sessions = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+            var tokens = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
             var languageId = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.DefaultLanguageId);
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokens);
 
             var requestContent = new MultipartFormDataContent();
 
@@ -55,6 +60,39 @@ namespace AdminApp.Services.Product
 
             var response = await _httpClient.PostAsync($"/api/products/", requestContent);
             return response.IsSuccessStatusCode;
+        }
+
+        public async Task<ApiResult<ProductViewModel>> GetById(int id, string languageId)
+        {
+            var result = await GetAsync<ProductViewModel>($"/api/products/{id}/{languageId}");
+
+            if (result == null)
+                return new ApiErrorResult<ProductViewModel>($"Couldn't find the product with id {id}");
+            else
+                return new ApiSuccessResult<ProductViewModel>(result);
+        }
+
+        public async Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request)
+        {
+            var tokens = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+            var languageId = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.DefaultLanguageId);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokens);
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            var jsonObject = JsonSerializer.Serialize(request);
+            var httpContent = new StringContent(jsonObject, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync($"/api/products/{id}/categories", httpContent);
+
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonSerializer.Deserialize<ApiSuccessResult<bool>>(body, options);
+
+            return JsonSerializer.Deserialize<ApiErrorResult<bool>>(body, options);
         }
 
         public async Task<PageResult<ProductViewModel>> GetPaging(GetProductPagingRequest request)
